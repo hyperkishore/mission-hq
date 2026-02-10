@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { Task } from '@/types'
 import { tasks as initialTasks } from '@/data/mock-data'
 
@@ -14,31 +15,36 @@ interface TaskStore {
   filteredTasks: () => Task[]
 }
 
-export const useTaskStore = create<TaskStore>((set, get) => ({
-  tasks: initialTasks,
-  filter: 'today',
-  setFilter: (filter) => set({ filter }),
-  toggleTask: (id) =>
-    set((state) => ({
-      tasks: state.tasks.map((t) =>
-        t.id === id ? { ...t, completed: !t.completed } : t
-      ),
-    })),
-  addTask: (task) => set((state) => ({ tasks: [task, ...state.tasks] })),
-  deleteTask: (id) =>
-    set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),
-  filteredTasks: () => {
-    const { tasks, filter } = get()
-    switch (filter) {
-      case 'today':
-        return tasks.filter((t) => !t.completed)
-      case 'high':
-        return tasks.filter((t) => t.priority === 'high' && !t.completed)
-      case 'completed':
-        return tasks.filter((t) => t.completed)
-      case 'all':
-      default:
-        return tasks
-    }
-  },
-}))
+export const useTaskStore = create<TaskStore>()(
+  persist(
+    (set, get) => ({
+      tasks: initialTasks,
+      filter: 'today',
+      setFilter: (filter) => set({ filter }),
+      toggleTask: (id) =>
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === id ? { ...t, completed: !t.completed } : t
+          ),
+        })),
+      addTask: (task) => set((state) => ({ tasks: [task, ...state.tasks] })),
+      deleteTask: (id) =>
+        set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),
+      filteredTasks: () => {
+        const { tasks, filter } = get()
+        switch (filter) {
+          case 'today':
+            return tasks.filter((t) => !t.completed)
+          case 'high':
+            return tasks.filter((t) => t.priority === 'high' && !t.completed)
+          case 'completed':
+            return tasks.filter((t) => t.completed)
+          case 'all':
+          default:
+            return tasks
+        }
+      },
+    }),
+    { name: 'mission-hq-tasks' }
+  )
+)

@@ -8,6 +8,7 @@ import { useGamificationStore } from "@/stores/gamification-store"
 import { useConfetti } from "@/hooks/use-confetti"
 import { Play, Pause, RotateCcw, Timer } from "lucide-react"
 import { motion } from "framer-motion"
+import { toast } from "sonner"
 
 export function FocusTimerWidget() {
   const {
@@ -38,6 +39,7 @@ export function FocusTimerWidget() {
     if (prevStatus !== "break" && status === "break") {
       fire()
       addXP(50)
+      toast.success("Focus session complete! +50 XP")
     }
     setPrevStatus(status)
   }, [status, prevStatus, fire, addXP])

@@ -8,8 +8,10 @@ import { useTaskStore } from "@/stores/task-store"
 import { useGamificationStore } from "@/stores/gamification-store"
 import { useConfetti } from "@/hooks/use-confetti"
 import { priorityColors } from "@/lib/colors"
-import { ListTodo } from "lucide-react"
+import { EmptyState } from "@/components/shared/empty-state"
+import { ListTodo, CheckCircle2, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
 
 export function TasksWidget() {
   const { tasks, filter, setFilter, toggleTask, filteredTasks } = useTaskStore()
@@ -27,6 +29,9 @@ export function TasksWidget() {
     if (!wasCompleted) {
       fire()
       addXP(25)
+      toast.success("Task completed! +25 XP")
+    } else {
+      toast("Task reopened")
     }
   }
 
@@ -80,9 +85,19 @@ export function TasksWidget() {
           ))}
 
           {displayTasks.length === 0 && (
-            <div className="text-center py-8 text-sm text-muted-foreground">
-              No tasks to show
-            </div>
+            filter === "completed" ? (
+              <EmptyState
+                icon={Search}
+                title="No completed tasks yet"
+                description="Complete a task to see it here"
+              />
+            ) : (
+              <EmptyState
+                icon={CheckCircle2}
+                title="All caught up!"
+                description="You've completed all your tasks"
+              />
+            )
           )}
         </div>
       </div>

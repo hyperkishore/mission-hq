@@ -6,6 +6,7 @@ import { WidgetCard } from "@/components/dashboard/widget-card"
 import { usePollStore } from "@/stores/poll-store"
 import { useGamificationStore } from "@/stores/gamification-store"
 import { Check, BarChart } from "lucide-react"
+import { toast } from "sonner"
 
 export function QuickPollWidget() {
   const { poll, hasVoted, vote } = usePollStore()
@@ -13,6 +14,7 @@ export function QuickPollWidget() {
   const handleVote = (optionId: string) => {
     vote(optionId)
     useGamificationStore.getState().addXP(10)
+    toast.success("Vote recorded! +10 XP")
   }
 
   const getPercentage = (votes: number) => {
