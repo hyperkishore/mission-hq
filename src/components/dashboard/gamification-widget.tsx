@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useGamificationStore } from "@/stores/gamification-store"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
@@ -60,6 +61,14 @@ export function GamificationWidget() {
             <div className="text-xl font-bold">{profile.streak} days</div>
           </div>
         </div>
+
+        {/* View Leaderboard */}
+        <Link
+          href="/leaderboard"
+          className="block text-center text-xs font-medium text-primary hover:text-primary/80 transition-colors py-1"
+        >
+          View Leaderboard
+        </Link>
 
         {/* Achievements Preview */}
         <div className="space-y-2">

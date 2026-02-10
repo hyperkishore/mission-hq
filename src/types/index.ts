@@ -190,3 +190,53 @@ export interface User {
   department: string;
   joinDate: string;
 }
+
+// Feed Item Types (Unified Timeline)
+export type FeedItemType = "social" | "activity" | "announcement" | "shoutout"
+
+export interface FeedItemBase {
+  id: string
+  type: FeedItemType
+  createdAt: string // ISO date
+  pinned?: boolean
+}
+
+export interface SocialFeedItem extends FeedItemBase {
+  type: "social"
+  author: { name: string; avatar: string; role: string }
+  content: string
+  image?: string
+  likes: number
+  liked: boolean
+  comments: number
+  tags?: string[]
+}
+
+export interface ActivityFeedItem extends FeedItemBase {
+  type: "activity"
+  team: string
+  activityType: "shipped" | "decided" | "needs-input"
+  title: string
+  description: string
+  author: string
+}
+
+export interface AnnouncementFeedItem extends FeedItemBase {
+  type: "announcement"
+  title: string
+  content: string
+  author: { name: string; avatar: string; role: string }
+  category: "product" | "company" | "engineering" | "design" | "hr"
+  priority?: "critical" | "high" | "medium" | "low"
+  deadline?: string
+}
+
+export interface ShoutoutFeedItem extends FeedItemBase {
+  type: "shoutout"
+  from: { name: string; avatar: string }
+  to: { name: string; avatar: string }
+  message: string
+  emoji: string
+}
+
+export type FeedItem = SocialFeedItem | ActivityFeedItem | AnnouncementFeedItem | ShoutoutFeedItem

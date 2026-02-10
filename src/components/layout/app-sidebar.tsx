@@ -1,12 +1,10 @@
 "use client"
 
 import {
-  LayoutDashboard,
+  Home,
   BarChart3,
   Calendar,
   Users,
-  MessageSquare,
-  Trophy,
   Heart,
   Settings,
   LogOut,
@@ -40,7 +38,7 @@ const navGroups = [
   {
     label: "Overview",
     items: [
-      { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+      { title: "Home", url: "/dashboard", icon: Home },
     ],
   },
   {
@@ -54,8 +52,6 @@ const navGroups = [
     label: "People",
     items: [
       { title: "Team", url: "/team", icon: Users },
-      { title: "Social Feed", url: "/social", icon: MessageSquare },
-      { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
     ],
   },
   {
@@ -114,6 +110,26 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Settings</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === "/settings"}
+                  tooltip="Settings"
+                >
+                  <Link href="/settings">
+                    <Settings />
+                    <span>Settings</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
@@ -145,9 +161,11 @@ export function AppSidebar() {
                 align="start"
                 sideOffset={4}
               >
-                <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>

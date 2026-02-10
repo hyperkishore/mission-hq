@@ -7,20 +7,23 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
 import { Bell, ChevronRight } from "lucide-react"
+import { useNotificationStore } from "@/stores/notification-store"
 
 const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
+  "/dashboard": "Home",
   "/analytics": "Analytics",
   "/calendar": "Calendar",
   "/team": "Team",
-  "/social": "Social Feed",
   "/leaderboard": "Leaderboard",
   "/wellness": "Wellness",
+  "/settings": "Settings",
 }
 
 export function Topbar() {
   const pathname = usePathname()
   const title = pageTitles[pathname] || "Dashboard"
+  const { open: openNotifications, unreadCount } = useNotificationStore()
+  const count = unreadCount()
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
@@ -33,9 +36,18 @@ export function Topbar() {
       </div>
       <div className="flex-1" />
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="relative h-8 w-8">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="relative h-8 w-8"
+          onClick={openNotifications}
+        >
           <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
+          {count > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
+              {count > 9 ? "9+" : count}
+            </span>
+          )}
         </Button>
         <ThemeToggle />
         <Button variant="ghost" size="icon" className="h-8 w-8">
