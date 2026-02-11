@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { WidgetCard } from "@/components/dashboard/widget-card"
 import { useTaskStore } from "@/stores/task-store"
 import { useGamificationStore } from "@/stores/gamification-store"
+import { useNotificationStore } from "@/stores/notification-store"
 import { useConfetti } from "@/hooks/use-confetti"
 import { priorityColors } from "@/lib/colors"
 import { EmptyState } from "@/components/shared/empty-state"
@@ -16,6 +17,7 @@ import { toast } from "sonner"
 export function TasksWidget() {
   const { tasks, filter, setFilter, toggleTask, filteredTasks } = useTaskStore()
   const addXP = useGamificationStore((state) => state.addXP)
+  const addNotification = useNotificationStore((state) => state.addNotification)
   const { fire } = useConfetti()
 
   const displayTasks = filteredTasks()
@@ -29,6 +31,11 @@ export function TasksWidget() {
     if (!wasCompleted) {
       fire()
       addXP(25)
+      addNotification({
+        title: "Task completed!",
+        description: `You finished "${task?.title}" and earned 25 XP`,
+        type: "success",
+      })
       toast.success("Task completed! +25 XP")
     } else {
       toast("Task reopened")

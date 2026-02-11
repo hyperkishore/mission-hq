@@ -11,6 +11,7 @@ interface FeedStore {
   filteredItems: () => FeedItem[]
   addPost: (content: string) => void
   toggleLike: (itemId: string) => void
+  togglePin: (itemId: string) => void
 }
 
 export const useFeedStore = create<FeedStore>()(
@@ -52,6 +53,16 @@ export const useFeedStore = create<FeedStore>()(
                 liked: !socialItem.liked,
                 likes: socialItem.liked ? socialItem.likes - 1 : socialItem.likes + 1,
               }
+            }
+            return item
+          }),
+        })),
+
+      togglePin: (itemId) =>
+        set((state) => ({
+          items: state.items.map((item) => {
+            if (item.id === itemId && item.type === 'announcement') {
+              return { ...item, pinned: !item.pinned }
             }
             return item
           }),

@@ -9,7 +9,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
-import { Sun, Moon, Monitor, Zap, Keyboard, Command } from "lucide-react"
+import { Sun, Moon, Zap, Keyboard, Command, RotateCcw } from "lucide-react"
+import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
 const themes = [
@@ -127,6 +128,33 @@ export default function SettingsPage() {
               />
             </div>
           ))}
+        </div>
+      </Card>
+
+      {/* Data Management */}
+      <Card className="p-6">
+        <h3 className="text-sm font-semibold mb-4">Data</h3>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium">Reset all data</p>
+            <p className="text-xs text-muted-foreground">
+              Clear saved tasks, feed posts, XP, and preferences
+            </p>
+          </div>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => {
+              const keys = Object.keys(localStorage).filter((k) =>
+                k.startsWith("mission-hq")
+              )
+              keys.forEach((k) => localStorage.removeItem(k))
+              toast.success("Data reset! Refresh to see changes.")
+            }}
+          >
+            <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+            Reset
+          </Button>
         </div>
       </Card>
 

@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
   Rocket,
+  Trophy,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -52,6 +53,7 @@ const navGroups = [
     label: "People",
     items: [
       { title: "Team", url: "/team", icon: Users },
+      { title: "Leaderboard", url: "/leaderboard", icon: Trophy },
     ],
   },
   {

@@ -1,7 +1,6 @@
 export { useTaskStore } from './task-store'
 export { useFocusStore } from './focus-store'
 export { usePollStore } from './poll-store'
-export { useSocialStore } from './social-store'
 export { useGamificationStore } from './gamification-store'
 export { useUIStore } from './ui-store'
 export { useCommandStore } from './command-store'

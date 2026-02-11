@@ -27,14 +27,18 @@ import {
   Moon,
   Zap,
   Bell,
+  Star,
+  Megaphone,
 } from "lucide-react"
 import { useTheme } from "next-themes"
+import { toast } from "sonner"
 
 const pages = [
   { name: "Home", icon: Home, url: "/dashboard" },
   { name: "Analytics", icon: BarChart3, url: "/analytics" },
   { name: "Calendar", icon: Calendar, url: "/calendar" },
   { name: "Team", icon: Users, url: "/team" },
+  { name: "Leaderboard", icon: Trophy, url: "/leaderboard" },
   { name: "Wellness", icon: Heart, url: "/wellness" },
   { name: "Settings", icon: Settings, url: "/settings" },
 ]
@@ -113,16 +117,22 @@ export function CommandPalette() {
             <span>Theme: Unusual</span>
           </CommandItem>
           <CommandItem
-            onSelect={() => runCommand(() => router.push("/leaderboard"))}
-          >
-            <Trophy className="mr-2 h-4 w-4" />
-            <span>View Leaderboard</span>
-          </CommandItem>
-          <CommandItem
             onSelect={() => runCommand(() => toggleNotifications())}
           >
             <Bell className="mr-2 h-4 w-4" />
             <span>Open notifications</span>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => runCommand(() => toast("Shoutouts coming soon!"))}
+          >
+            <Star className="mr-2 h-4 w-4" />
+            <span>Give a shoutout</span>
+          </CommandItem>
+          <CommandItem
+            onSelect={() => runCommand(() => toast("Announcements coming soon!"))}
+          >
+            <Megaphone className="mr-2 h-4 w-4" />
+            <span>Create announcement</span>
           </CommandItem>
         </CommandGroup>
       </CommandList>

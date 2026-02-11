@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Inbox } from "lucide-react"
+import { Inbox, MessageSquare, Activity, Megaphone, Star } from "lucide-react"
 import { KpiBar } from "./kpi-bar"
 import { FeedFilters } from "./feed-filters"
 import { PostComposer } from "./post-composer"
@@ -41,9 +41,27 @@ export function UnifiedTimeline() {
 
           {items.length === 0 ? (
             <EmptyState
-              icon={Inbox}
-              title="No items found"
-              description="Try a different filter to see more content"
+              icon={
+                filter === "social" ? MessageSquare
+                : filter === "activity" ? Activity
+                : filter === "announcement" ? Megaphone
+                : filter === "shoutout" ? Star
+                : Inbox
+              }
+              title={
+                filter === "social" ? "No posts yet"
+                : filter === "activity" ? "No activity updates"
+                : filter === "announcement" ? "No announcements"
+                : filter === "shoutout" ? "No shoutouts yet"
+                : "No items found"
+              }
+              description={
+                filter === "social" ? "Be the first to share something with the team"
+                : filter === "activity" ? "Activity updates will appear here"
+                : filter === "announcement" ? "No announcements to show right now"
+                : filter === "shoutout" ? "Give a shoutout to recognize a teammate"
+                : "Try a different filter to see more content"
+              }
             />
           ) : (
             <motion.div

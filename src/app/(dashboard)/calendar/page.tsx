@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Plus } from "lucide-react"
 import {
   format,
   startOfMonth,
@@ -22,8 +22,12 @@ import { PageHeader } from "@/components/shared/page-header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { calendarEvents } from "@/data/mock-data"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { calendarEvents as initialCalendarEvents } from "@/data/mock-data"
 import { cn } from "@/lib/utils"
+import { toast } from "sonner"
+import type { CalendarEvent } from "@/types"
 
 const EVENT_COLORS: Record<string, string> = {
   meeting: "#3b82f6",
@@ -36,6 +40,14 @@ const EVENT_COLORS: Record<string, string> = {
 export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
+  const [localEvents, setLocalEvents] = useState<CalendarEvent[]>([])
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [newTitle, setNewTitle] = useState("")
+  const [newStartTime, setNewStartTime] = useState("09:00")
+  const [newEndTime, setNewEndTime] = useState("10:00")
+  const [newType, setNewType] = useState<CalendarEvent["type"]>("focus-block")
+
+  const calendarEvents = [...initialCalendarEvents, ...localEvents]
 
   // Get calendar days for the current month view
   const monthStart = startOfMonth(currentMonth)
@@ -64,6 +76,29 @@ export default function CalendarPage() {
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date)
+  }
+
+  const handleAddEvent = () => {
+    if (!newTitle.trim()) {
+      toast.error("Please enter a title")
+      return
+    }
+    const event: CalendarEvent = {
+      id: `local-${Date.now()}`,
+      title: newTitle.trim(),
+      date: format(selectedDate, "yyyy-MM-dd"),
+      startTime: newStartTime,
+      endTime: newEndTime,
+      type: newType,
+      color: EVENT_COLORS[newType] || "#8b5cf6",
+    }
+    setLocalEvents((prev) => [...prev, event])
+    setNewTitle("")
+    setNewStartTime("09:00")
+    setNewEndTime("10:00")
+    setNewType("focus-block")
+    setShowAddForm(false)
+    toast.success("Event added!")
   }
 
   return (
@@ -170,18 +205,71 @@ export default function CalendarPage() {
         {/* Selected Day Events */}
         <Card className="lg:col-span-1">
           <CardHeader>
-            <CardTitle>
-              {isSameDay(selectedDate, new Date())
-                ? "Today's Events"
-                : format(selectedDate, "MMM d, yyyy")}
-            </CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>
+                {isSameDay(selectedDate, new Date())
+                  ? "Today's Events"
+                  : format(selectedDate, "MMM d, yyyy")}
+              </CardTitle>
+              <Button
+                size="sm"
+                variant={showAddForm ? "secondary" : "default"}
+                onClick={() => setShowAddForm(!showAddForm)}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Add
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
-            {selectedDateEvents.length === 0 ? (
+            {showAddForm && (
+              <div className="space-y-3 mb-4 p-3 rounded-lg border bg-muted/50">
+                <Input
+                  placeholder="Event title"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                />
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Start</label>
+                    <Input
+                      type="time"
+                      value={newStartTime}
+                      onChange={(e) => setNewStartTime(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">End</label>
+                    <Input
+                      type="time"
+                      value={newEndTime}
+                      onChange={(e) => setNewEndTime(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <Select value={newType} onValueChange={(v) => setNewType(v as CalendarEvent["type"])}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="focus-block">Focus Block</SelectItem>
+                    <SelectItem value="meeting">Meeting</SelectItem>
+                    <SelectItem value="deadline">Deadline</SelectItem>
+                    <SelectItem value="social">Social</SelectItem>
+                    <SelectItem value="review">Review</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button onClick={handleAddEvent} className="w-full" size="sm">
+                  Add Event
+                </Button>
+              </div>
+            )}
+
+            {selectedDateEvents.length === 0 && !showAddForm ? (
               <p className="text-sm text-muted-foreground text-center py-8">
                 No events scheduled
               </p>
-            ) : (
+            ) : selectedDateEvents.length > 0 ? (
               <div className="space-y-4">
                 {selectedDateEvents.map(event => (
                   <div
@@ -220,7 +308,7 @@ export default function CalendarPage() {
                   </div>
                 ))}
               </div>
-            )}
+            ) : null}
           </CardContent>
         </Card>
       </div>

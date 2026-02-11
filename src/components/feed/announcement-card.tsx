@@ -8,10 +8,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { categoryColors, priorityColors, priorityBorderColors } from "@/lib/colors"
 import { Pin, ChevronDown, ChevronUp, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useFeedStore } from "@/stores/feed-store"
 import type { AnnouncementFeedItem } from "@/types"
 
 export function AnnouncementCard({ item }: { item: AnnouncementFeedItem }) {
   const [expanded, setExpanded] = useState(false)
+  const togglePin = useFeedStore((s) => s.togglePin)
   const isLong = item.content.length > 150
 
   return (
@@ -38,9 +40,16 @@ export function AnnouncementCard({ item }: { item: AnnouncementFeedItem }) {
               {item.priority}
             </Badge>
           )}
-          {item.pinned && (
-            <Pin className="h-3 w-3 text-primary" />
-          )}
+          <button
+            onClick={() => togglePin(item.id)}
+            className={cn(
+              "p-0.5 rounded hover:bg-accent transition-colors",
+              item.pinned ? "text-primary" : "text-muted-foreground/50 hover:text-muted-foreground"
+            )}
+            title={item.pinned ? "Unpin" : "Pin"}
+          >
+            <Pin className="h-3 w-3" />
+          </button>
           {item.deadline && (
             <Badge variant="outline" className="text-xs text-muted-foreground ml-auto">
               <Clock className="h-3 w-3 mr-1" />
