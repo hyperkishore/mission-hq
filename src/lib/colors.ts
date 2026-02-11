@@ -30,18 +30,27 @@ export const eventTypeColors: Record<string, string> = {
 
 export const updateTypeConfig: Record<
   string,
-  { color: string; label: string }
+  { color: string; label: string; borderColor: string }
 > = {
   shipped: {
     color: "bg-green-500/15 text-green-500 border-green-500/20",
     label: "Shipped",
+    borderColor: "border-l-green-500",
   },
   decided: {
     color: "bg-blue-500/15 text-blue-500 border-blue-500/20",
     label: "Decided",
+    borderColor: "border-l-blue-500",
   },
   "needs-input": {
     color: "bg-amber-500/15 text-amber-500 border-amber-500/20",
     label: "Needs Input",
+    borderColor: "border-l-amber-500",
   },
+}
+
+export const feedTypeBorderColors: Record<string, string> = {
+  social: "border-l-blue-500",
+  shoutout: "border-l-amber-400",
+  announcement: "border-l-purple-500",
 }

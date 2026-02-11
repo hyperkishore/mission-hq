@@ -5,8 +5,8 @@ import { formatDistanceToNow } from "date-fns"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { categoryColors, priorityColors } from "@/lib/colors"
-import { Pin, ChevronDown, ChevronUp } from "lucide-react"
+import { categoryColors, priorityColors, priorityBorderColors } from "@/lib/colors"
+import { Pin, ChevronDown, ChevronUp, Clock } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { AnnouncementFeedItem } from "@/types"
 
@@ -17,7 +17,8 @@ export function AnnouncementCard({ item }: { item: AnnouncementFeedItem }) {
   return (
     <Card
       className={cn(
-        "p-5 hover:bg-accent/30 transition-colors",
+        "p-5 hover:bg-accent/30 transition-colors border-l-3",
+        item.priority ? priorityBorderColors[item.priority] : "border-l-purple-500",
         item.pinned && "border-primary/30 bg-primary/[0.02]"
       )}
     >
@@ -39,6 +40,12 @@ export function AnnouncementCard({ item }: { item: AnnouncementFeedItem }) {
           )}
           {item.pinned && (
             <Pin className="h-3 w-3 text-primary" />
+          )}
+          {item.deadline && (
+            <Badge variant="outline" className="text-xs text-muted-foreground ml-auto">
+              <Clock className="h-3 w-3 mr-1" />
+              Due {formatDistanceToNow(new Date(item.deadline), { addSuffix: true })}
+            </Badge>
           )}
         </div>
 

@@ -15,18 +15,18 @@ const containerVariants = {
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.05,
+      staggerChildren: 0.07,
     },
   },
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 10, scale: 0.98 },
+  show: { opacity: 1, y: 0, scale: 1 },
 }
 
 export function UnifiedTimeline() {
-  const { filteredItems } = useFeedStore()
+  const { filter, filteredItems } = useFeedStore()
   const items = filteredItems()
 
   return (
@@ -47,6 +47,7 @@ export function UnifiedTimeline() {
             />
           ) : (
             <motion.div
+              key={filter}
               variants={containerVariants}
               initial="hidden"
               animate="show"
