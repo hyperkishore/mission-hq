@@ -22,7 +22,7 @@ export function FocusTimerWidget() {
     tick,
   } = useFocusStore()
 
-  const addXP = useGamificationStore((state) => state.addXP)
+  const { addXP, recordDailyAction } = useGamificationStore()
   const { fire } = useConfetti()
   const [prevStatus, setPrevStatus] = useState(status)
 
@@ -38,8 +38,8 @@ export function FocusTimerWidget() {
   useEffect(() => {
     if (prevStatus !== "break" && status === "break") {
       fire()
-      addXP(50)
-      toast.success("Focus session complete! +50 XP")
+      recordDailyAction('focus')
+      addXP(50, 'Focus session complete')
     }
     setPrevStatus(status)
   }, [status, prevStatus, fire, addXP])

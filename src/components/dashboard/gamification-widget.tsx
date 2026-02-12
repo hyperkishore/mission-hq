@@ -5,13 +5,14 @@ import { useGamificationStore } from "@/stores/gamification-store"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { WidgetCard } from "@/components/dashboard/widget-card"
-import { Trophy, Flame, Star, Zap, Lock } from "lucide-react"
+import { Trophy, Flame, Star, Zap, Lock, Shield } from "lucide-react"
 
 const LEVEL_ICONS = [Trophy, Flame, Star, Zap]
 
 export function GamificationWidget() {
-  const { profile } = useGamificationStore()
+  const { profile, getMultiplier } = useGamificationStore()
   const xpPercentage = (profile.xp / profile.xpToNextLevel) * 100
+  const multiplier = getMultiplier()
 
   return (
     <WidgetCard title="Level & XP" icon={<Trophy className="h-4 w-4" />}>
@@ -41,6 +42,14 @@ export function GamificationWidget() {
             </span>
           </div>
           <Progress value={xpPercentage} className="h-2" />
+          {multiplier > 1.0 && (
+            <div className="flex items-center gap-1 mt-1">
+              <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                <Zap className="h-2.5 w-2.5 mr-0.5" />
+                {multiplier.toFixed(1)}x XP
+              </Badge>
+            </div>
+          )}
         </div>
 
         {/* Stats */}
@@ -59,6 +68,12 @@ export function GamificationWidget() {
               <span>Streak</span>
             </div>
             <div className="text-xl font-bold">{profile.streak} days</div>
+            {profile.streakFreezes > 0 && (
+              <div className="flex items-center gap-1 text-[10px] text-blue-500 mt-0.5">
+                <Shield className="h-2.5 w-2.5" />
+                {profile.streakFreezes} freeze{profile.streakFreezes !== 1 ? "s" : ""}
+              </div>
+            )}
           </div>
         </div>
 

@@ -133,6 +133,27 @@ export const gamificationProfile: GamificationProfile = {
   xp: 2850,
   xpToNextLevel: 3500,
   title: 'Productivity Wizard',
+  // Streak tracking
+  lastActivityDate: new Date().toISOString().split('T')[0],
+  streakFreezes: 2,
+  streak: 12,
+  // XP multiplier
+  comboCount: 0,
+  lastXPActionAt: null,
+  // Daily tracking
+  dailyTasksCompleted: 0,
+  dailyFocusSessions: 0,
+  dailyShoutoutsGiven: 0,
+  dailySocialEngagements: 0,
+  lastDailyReset: new Date().toISOString().split('T')[0],
+  // Weekly tracking
+  lastWeeklyReset: new Date().toISOString().split('T')[0],
+  weeklyRecap: null,
+  weeklyXP: 450,
+  // Daily check-in
+  lastCheckinDate: null,
+  // Unlockable themes
+  unlockedThemes: ['light', 'dark', 'unusual'],
   achievements: [
     {
       id: 'a1',
@@ -180,8 +201,6 @@ export const gamificationProfile: GamificationProfile = {
       earned: false,
     },
   ],
-  weeklyXP: 850,
-  streak: 12,
 }
 
 // Current User

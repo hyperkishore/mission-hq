@@ -160,6 +160,25 @@ export interface GamificationProfile {
   achievements: Achievement[];
   weeklyXP: number;
   streak: number;
+  // Streak tracking
+  lastActivityDate: string | null; // ISO date (date only, e.g. "2026-02-12")
+  streakFreezes: number;
+  // XP multiplier
+  comboCount: number; // consecutive actions within 5 min
+  lastXPActionAt: string | null; // ISO timestamp
+  // Daily tracking
+  dailyTasksCompleted: number;
+  dailyFocusSessions: number;
+  dailyShoutoutsGiven: number;
+  dailySocialEngagements: number; // likes + posts
+  lastDailyReset: string | null; // ISO date
+  // Weekly tracking
+  lastWeeklyReset: string | null; // ISO date
+  weeklyRecap: WeeklyRecap | null;
+  // Daily check-in
+  lastCheckinDate: string | null; // ISO date
+  // Unlockable themes
+  unlockedThemes: string[];
 }
 
 export interface Achievement {
@@ -169,6 +188,19 @@ export interface Achievement {
   icon: string;
   earned: boolean;
   earnedAt?: string;
+  progress?: number; // 0-100
+  target?: number; // e.g. 25 for "Complete 25 sessions"
+  current?: number; // e.g. 18 sessions done
+}
+
+export interface WeeklyRecap {
+  weekStart: string; // ISO date
+  xpEarned: number;
+  tasksCompleted: number;
+  focusSessions: number;
+  shoutoutsGiven: number;
+  streakDays: number;
+  levelUps: number;
 }
 
 // AnalyticsDataPoint for charts

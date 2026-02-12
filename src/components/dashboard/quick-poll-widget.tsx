@@ -13,8 +13,9 @@ export function QuickPollWidget() {
 
   const handleVote = (optionId: string) => {
     vote(optionId)
-    useGamificationStore.getState().addXP(10)
-    toast.success("Vote recorded! +10 XP")
+    const store = useGamificationStore.getState()
+    store.recordDailyAction('social')
+    store.addXP(10, 'Poll vote')
   }
 
   const getPercentage = (votes: number) => {

@@ -16,7 +16,7 @@ import { toast } from "sonner"
 
 export function TasksWidget() {
   const { tasks, filter, setFilter, toggleTask, filteredTasks } = useTaskStore()
-  const addXP = useGamificationStore((state) => state.addXP)
+  const { addXP, recordDailyAction } = useGamificationStore()
   const addNotification = useNotificationStore((state) => state.addNotification)
   const { fire } = useConfetti()
 
@@ -30,13 +30,13 @@ export function TasksWidget() {
 
     if (!wasCompleted) {
       fire()
-      addXP(25)
+      recordDailyAction('task')
+      addXP(25, 'Task completed')
       addNotification({
         title: "Task completed!",
-        description: `You finished "${task?.title}" and earned 25 XP`,
+        description: `You finished "${task?.title}" and earned XP`,
         type: "success",
       })
-      toast.success("Task completed! +25 XP")
     } else {
       toast("Task reopened")
     }

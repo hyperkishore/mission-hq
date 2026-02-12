@@ -9,14 +9,23 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
-import { Sun, Moon, Zap, Keyboard, Command, RotateCcw } from "lucide-react"
+import { Sun, Moon, Zap, Keyboard, Command, RotateCcw, Lock, Palette } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
+import { useGamificationStore, THEME_UNLOCK_LEVELS } from "@/stores/gamification-store"
 
-const themes = [
+const baseThemes = [
   { value: "light", label: "Light", icon: Sun },
   { value: "dark", label: "Dark", icon: Moon },
   { value: "unusual", label: "Unusual", icon: Zap },
+] as const
+
+const unlockableThemes = [
+  { value: "midnight", label: "Midnight", level: 5 },
+  { value: "forest", label: "Forest", level: 10 },
+  { value: "sunset", label: "Sunset", level: 15 },
+  { value: "ocean", label: "Ocean", level: 20 },
+  { value: "aurora", label: "Aurora", level: 25 },
 ] as const
 
 const shortcuts = [
@@ -54,6 +63,7 @@ function useNotificationPreferences() {
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { prefs, toggle } = useNotificationPreferences()
+  const { profile } = useGamificationStore()
 
   return (
     <motion.div
@@ -88,8 +98,8 @@ export default function SettingsPage() {
       {/* Appearance */}
       <Card className="p-6">
         <h3 className="text-sm font-semibold mb-4">Appearance</h3>
-        <div className="flex gap-2">
-          {themes.map(({ value, label, icon: Icon }) => (
+        <div className="flex gap-2 mb-4">
+          {baseThemes.map(({ value, label, icon: Icon }) => (
             <Button
               key={value}
               variant={theme === value ? "default" : "outline"}
@@ -104,6 +114,45 @@ export default function SettingsPage() {
               {label}
             </Button>
           ))}
+        </div>
+
+        {/* Unlockable Themes */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Palette className="h-3.5 w-3.5" />
+            <span className="font-medium">Unlockable Themes</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {unlockableThemes.map(({ value, label, level }) => {
+              const unlocked = profile.unlockedThemes.includes(value)
+              const isActive = theme === value
+              return (
+                <Button
+                  key={value}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  disabled={!unlocked}
+                  onClick={() => unlocked && setTheme(value)}
+                  className={cn(
+                    "justify-between",
+                    !unlocked && "opacity-50"
+                  )}
+                >
+                  <span>{label}</span>
+                  {unlocked ? (
+                    <Badge variant="secondary" className="text-[10px] h-4 px-1.5">
+                      Lv {level}
+                    </Badge>
+                  ) : (
+                    <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <Lock className="h-3 w-3" />
+                      Lv {level}
+                    </span>
+                  )}
+                </Button>
+              )
+            })}
+          </div>
         </div>
       </Card>
 

@@ -8,11 +8,13 @@ import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { useFeedStore } from "@/stores/feed-store"
+import { useGamificationStore } from "@/stores/gamification-store"
 import { toast } from "sonner"
 import type { SocialFeedItem } from "@/types"
 
 export function SocialCard({ item }: { item: SocialFeedItem }) {
   const { toggleLike } = useFeedStore()
+  const { recordDailyAction, addXP } = useGamificationStore()
   const [animateLike, setAnimateLike] = useState(false)
 
   return (
@@ -71,7 +73,8 @@ export function SocialCard({ item }: { item: SocialFeedItem }) {
               toggleLike(item.id)
               if (!item.liked) {
                 setAnimateLike(true)
-                toast("Liked!")
+                recordDailyAction('social')
+                addXP(5, 'Liked a post')
               }
             }}
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"

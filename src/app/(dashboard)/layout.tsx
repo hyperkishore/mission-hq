@@ -6,11 +6,15 @@ import { AppSidebar } from "@/components/layout/app-sidebar"
 import { Topbar } from "@/components/layout/topbar"
 import { CommandPalette } from "@/components/shared/command-palette"
 import { NotificationPanel } from "@/components/shared/notification-panel"
+import { DailyCheckin } from "@/components/shared/daily-checkin"
+import { WeeklyRecap } from "@/components/shared/weekly-recap"
 import { DashboardSkeleton } from "@/components/dashboard/widget-skeleton"
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts"
+import { useProactiveNudges } from "@/hooks/use-proactive-nudges"
 
 function DashboardShell({ children }: { children: React.ReactNode }) {
   useKeyboardShortcuts()
+  useProactiveNudges()
 
   return (
     <SidebarProvider>
@@ -21,6 +25,8 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       </SidebarInset>
       <CommandPalette />
       <NotificationPanel />
+      <DailyCheckin />
+      <WeeklyRecap />
     </SidebarProvider>
   )
 }
