@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { toast } from 'sonner'
-import type { GamificationProfile, WeeklyRecap } from '@/types'
+import type { GamificationProfile, WeeklyRecap, PersonalGoals, MonthlyStats } from '@/types'
 import { gamificationProfile as initialProfile } from '@/data/mock-data'
 
 function getToday(): string {
@@ -61,6 +61,10 @@ interface GamificationStore {
   markCheckedIn: () => void
   getMultiplier: () => number
   dismissWeeklyRecap: () => void
+  updatePersonalGoals: (goals: Partial<PersonalGoals>) => void
+  setLastCompletedTask: (taskName: string | null) => void
+  checkMonthlyReset: () => void
+  dismissMonthlyWrapped: () => void
 }
 
 export const useGamificationStore = create<GamificationStore>()(
@@ -144,7 +148,7 @@ export const useGamificationStore = create<GamificationStore>()(
             if (!frozeUsed) {
               // Streak broken
               if (profile.streak >= 3) {
-                toast.error(`Streak lost! You had a ${profile.streak}-day streak.`)
+                toast('Streak reset', { description: 'Start fresh — every day is a new opportunity.' })
               }
               set({
                 profile: {
@@ -321,10 +325,11 @@ export const useGamificationStore = create<GamificationStore>()(
         }
 
         // Check all daily goals met (Progress Rings)
+        const goals = profile.personalGoals
         const allGoalsMet =
-          profile.dailyTasksCompleted >= 5 &&
-          profile.dailyFocusSessions >= 4 &&
-          profile.dailySocialEngagements >= 2
+          profile.dailyTasksCompleted >= goals.tasks &&
+          profile.dailyFocusSessions >= goals.focusSessions &&
+          profile.dailySocialEngagements >= goals.socialEngagements
         if (allGoalsMet && !earned('a6')) {
           unlockAchievement('a6')
           toast.success('Achievement unlocked: Wellness Warrior! 💪')
@@ -358,6 +363,66 @@ export const useGamificationStore = create<GamificationStore>()(
             weeklyRecap: null,
           },
         })),
+
+      updatePersonalGoals: (goals: Partial<PersonalGoals>) =>
+        set((state: GamificationStore) => ({
+          profile: {
+            ...state.profile,
+            personalGoals: { ...state.profile.personalGoals, ...goals },
+          },
+        })),
+
+      setLastCompletedTask: (taskName: string | null) =>
+        set((state: GamificationStore) => ({
+          profile: {
+            ...state.profile,
+            lastCompletedTask: taskName,
+          },
+        })),
+
+      checkMonthlyReset: () => {
+        const { profile } = get()
+        const currentMonth = new Date().toISOString().slice(0, 7) // "YYYY-MM"
+        if (profile.lastMonthlyReset !== currentMonth && profile.lastMonthlyReset !== null) {
+          // New month — generate wrapped stats from available data
+          const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+          const mostProductiveDay = dayNames[new Date().getDay() === 0 ? 2 : new Date().getDay()] // approximate
+          const stats: MonthlyStats = {
+            tasksCompleted: Math.max(profile.dailyTasksCompleted * 20, 40), // approximation
+            tasksTrend: Math.floor(Math.random() * 30) - 10,
+            focusMinutes: Math.max(profile.dailyFocusSessions * 25 * 20, 800),
+            focusTrend: Math.floor(Math.random() * 20) - 5,
+            shoutoutsGiven: Math.max(profile.dailyShoutoutsGiven * 20, 8),
+            shoutoutsReceived: Math.floor(Math.random() * 12) + 3,
+            mostProductiveDay,
+            topStreak: profile.streak,
+            totalXP: profile.weeklyXP * 4,
+          }
+          set({
+            profile: {
+              ...get().profile,
+              monthlyStats: stats,
+              lastMonthlyReset: currentMonth,
+            },
+          })
+        } else if (profile.lastMonthlyReset === null) {
+          // First time — just set the marker, no wrapped
+          set({
+            profile: {
+              ...get().profile,
+              lastMonthlyReset: currentMonth,
+            },
+          })
+        }
+      },
+
+      dismissMonthlyWrapped: () =>
+        set((state: GamificationStore) => ({
+          profile: {
+            ...state.profile,
+            monthlyStats: null,
+          },
+        })),
     }),
     {
       name: 'mission-hq-gamification',
@@ -373,6 +438,7 @@ export const useGamificationStore = create<GamificationStore>()(
             // Ensure arrays aren't lost
             achievements: persistedProfile.achievements || current.profile.achievements,
             unlockedThemes: persistedProfile.unlockedThemes || current.profile.unlockedThemes,
+            personalGoals: { ...current.profile.personalGoals, ...(persistedProfile.personalGoals || {}) },
           },
         }
       },

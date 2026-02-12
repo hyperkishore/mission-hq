@@ -8,6 +8,9 @@ import { CommandPalette } from "@/components/shared/command-palette"
 import { NotificationPanel } from "@/components/shared/notification-panel"
 import { DailyCheckin } from "@/components/shared/daily-checkin"
 import { WeeklyRecap } from "@/components/shared/weekly-recap"
+import { SmartRecognitionPrompt } from "@/components/shared/smart-recognition-prompt"
+import { MonthlyWrapped } from "@/components/shared/monthly-wrapped"
+import { StandupPrompt } from "@/components/shared/standup-prompt"
 import { DashboardSkeleton } from "@/components/dashboard/widget-skeleton"
 import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts"
 import { useProactiveNudges } from "@/hooks/use-proactive-nudges"
@@ -21,12 +24,15 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
       <AppSidebar />
       <SidebarInset>
         <Topbar />
+        <SmartRecognitionPrompt />
+        <StandupPrompt />
         <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
       </SidebarInset>
       <CommandPalette />
       <NotificationPanel />
       <DailyCheckin />
       <WeeklyRecap />
+      <MonthlyWrapped />
     </SidebarProvider>
   )
 }

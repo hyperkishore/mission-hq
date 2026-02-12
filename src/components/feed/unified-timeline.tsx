@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Inbox, MessageSquare, Activity, Megaphone, Star } from "lucide-react"
+import { Inbox, MessageSquare, Activity, Megaphone, Star, Clock } from "lucide-react"
 import { KpiBar } from "./kpi-bar"
 import { FeedFilters } from "./feed-filters"
 import { PostComposer } from "./post-composer"
@@ -46,6 +46,7 @@ export function UnifiedTimeline() {
                 : filter === "activity" ? Activity
                 : filter === "announcement" ? Megaphone
                 : filter === "shoutout" ? Star
+                : filter === "standup" ? Clock
                 : Inbox
               }
               title={
@@ -53,6 +54,7 @@ export function UnifiedTimeline() {
                 : filter === "activity" ? "No activity updates"
                 : filter === "announcement" ? "No announcements"
                 : filter === "shoutout" ? "No shoutouts yet"
+                : filter === "standup" ? "No standups yet"
                 : "No items found"
               }
               description={
@@ -60,6 +62,7 @@ export function UnifiedTimeline() {
                 : filter === "activity" ? "Activity updates will appear here"
                 : filter === "announcement" ? "No announcements to show right now"
                 : filter === "shoutout" ? "Give a shoutout to recognize a teammate"
+                : filter === "standup" ? "Share what you're working on today"
                 : "Try a different filter to see more content"
               }
             />

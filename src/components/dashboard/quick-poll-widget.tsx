@@ -15,7 +15,6 @@ export function QuickPollWidget() {
     vote(optionId)
     const store = useGamificationStore.getState()
     store.recordDailyAction('social')
-    store.addXP(10, 'Poll vote')
   }
 
   const getPercentage = (votes: number) => {
@@ -75,7 +74,7 @@ export function QuickPollWidget() {
             })}
 
             <div className="pt-2 text-xs text-muted-foreground border-t">
-              {poll.totalVotes} votes &middot; +10 XP earned
+              {poll.totalVotes} votes
             </div>
           </div>
         )}

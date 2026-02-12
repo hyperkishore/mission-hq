@@ -11,6 +11,7 @@ const filters: { label: string; value: FeedItemType | "all" }[] = [
   { label: "Activity", value: "activity" },
   { label: "Announcements", value: "announcement" },
   { label: "Shoutouts", value: "shoutout" },
+  { label: "Standups", value: "standup" },
 ]
 
 export function FeedFilters() {

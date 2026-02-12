@@ -1,75 +1,31 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import { motion } from "framer-motion"
-import { TrendingUp, TrendingDown, Medal, Trophy, Award } from "lucide-react"
+import { TrendingUp, TrendingDown, User, Users, BarChart3, Activity } from "lucide-react"
 import { PageHeader } from "@/components/shared/page-header"
 import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { people } from "@/data/mock-data"
-
-type TabType = "overall" | "focus" | "tasks" | "recognition"
-
-const tabLabels: Record<TabType, { scoreLabel: string }> = {
-  overall: { scoreLabel: "points" },
-  focus: { scoreLabel: "hours" },
-  tasks: { scoreLabel: "completed" },
-  recognition: { scoreLabel: "shoutouts" },
-}
+import { useGamificationStore } from "@/stores/gamification-store"
+import { people, contributionData, departmentAverages } from "@/data/mock-data"
+import { ContributionHeatmap } from "@/components/shared/contribution-heatmap"
 
 export default function LeaderboardPage() {
-  const [activeTab, setActiveTab] = useState<TabType>("overall")
+  const { profile } = useGamificationStore()
 
-  // Seed-based deterministic scoring per person per tab
-  const allData = useMemo(() => {
-    const seed = (str: string) => {
-      let hash = 0
-      for (let i = 0; i < str.length; i++) {
-        hash = (hash << 5) - hash + str.charCodeAt(i)
-        hash |= 0
-      }
-      return Math.abs(hash)
-    }
+  // Simulated "team highlights" — top 5 by deterministic pseudo-score (opt-in)
+  const teamHighlights = people.slice(0, 5).map((p, i) => ({
+    ...p,
+    highlight: [
+      "Completed 15 tasks this week",
+      "8-hour focus streak",
+      "Most shoutouts given",
+      "30-day streak milestone",
+      "Shipped 3 features",
+    ][i],
+  }))
 
-    const tabs: TabType[] = ["overall", "focus", "tasks", "recognition"]
-    const result: Record<TabType, typeof people extends (infer T)[] ? (T & { score: number; achievements: number; trend: "up" | "down" })[] : never> = {} as any
-
-    for (const tab of tabs) {
-      const scored = people.map((p, i) => {
-        const s = seed(p.id + tab)
-        const base = tab === "focus" ? 40 : tab === "tasks" ? 80 : tab === "recognition" ? 15 : 500
-        const range = tab === "focus" ? 30 : tab === "tasks" ? 60 : tab === "recognition" ? 20 : 500
-        return {
-          ...p,
-          score: base + (s % range) - i * (tab === "recognition" ? 1 : tab === "focus" ? 2 : 3),
-          achievements: (s % 8) + 1,
-          trend: (s % 10 > 3 ? "up" : "down") as "up" | "down",
-        }
-      })
-      result[tab] = scored.sort((a, b) => b.score - a.score)
-    }
-    return result
-  }, [])
-
-  const leaderboardData = allData[activeTab]
-  const top3 = leaderboardData.slice(0, 3)
-  const rest = leaderboardData.slice(3, 12)
-  const { scoreLabel } = tabLabels[activeTab]
-
-  const medalColors = {
-    1: "text-yellow-500",
-    2: "text-gray-400",
-    3: "text-amber-600",
-  }
-
-  const getMedalIcon = (rank: number) => {
-    if (rank === 1) return <Trophy className={`h-8 w-8 ${medalColors[1]}`} />
-    if (rank === 2) return <Medal className={`h-8 w-8 ${medalColors[2]}`} />
-    if (rank === 3) return <Award className={`h-8 w-8 ${medalColors[3]}`} />
-    return null
-  }
+  const xpTrend = profile.weeklyXP > 300 ? "up" : "down"
 
   return (
     <motion.div
@@ -78,178 +34,155 @@ export default function LeaderboardPage() {
       className="space-y-6"
     >
       <PageHeader
-        title="Leaderboard"
-        description="Top contributors this month"
+        title="Progress"
+        description="Your personal growth and team activity"
       />
 
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as TabType)}>
-        <TabsList className="grid w-full max-w-md grid-cols-4">
-          <TabsTrigger value="overall">Overall</TabsTrigger>
-          <TabsTrigger value="focus">Focus Time</TabsTrigger>
-          <TabsTrigger value="tasks">Tasks</TabsTrigger>
-          <TabsTrigger value="recognition">Recognition</TabsTrigger>
-        </TabsList>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Your Progress — private stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+        >
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium text-muted-foreground">Your Progress</h3>
+            </div>
 
-        <TabsContent value={activeTab} className="space-y-8 mt-6">
-          {/* Podium Section - Top 3 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* 2nd Place */}
-            {top3[1] && (
-              <motion.div
-                key={`${activeTab}-2nd`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="order-2 md:order-1"
-              >
-                <Card className="p-6 text-center space-y-4">
-                  <div className="flex justify-center">{getMedalIcon(2)}</div>
-                  <Avatar className="h-20 w-20 mx-auto">
-                    <AvatarImage src={top3[1].avatar} alt={top3[1].name} />
-                    <AvatarFallback>{top3[1].name.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-bold text-lg">{top3[1].name}</h3>
-                    <p className="text-sm text-muted-foreground">{top3[1].role}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-3xl font-bold text-primary">{top3[1].score}</p>
-                    <p className="text-xs text-muted-foreground">{scoreLabel}</p>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    {top3[1].trend === "up" ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className="text-sm text-muted-foreground">vs last month</span>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-
-            {/* 1st Place */}
-            {top3[0] && (
-              <motion.div
-                key={`${activeTab}-1st`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0 }}
-                className="order-1 md:order-2"
-              >
-                <Card className="p-8 text-center space-y-4 border-2 border-primary shadow-lg">
-                  <div className="flex justify-center">{getMedalIcon(1)}</div>
-                  <Avatar className="h-24 w-24 mx-auto ring-4 ring-primary/20">
-                    <AvatarImage src={top3[0].avatar} alt={top3[0].name} />
-                    <AvatarFallback>{top3[0].name.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-bold text-xl">{top3[0].name}</h3>
-                    <p className="text-sm text-muted-foreground">{top3[0].role}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-4xl font-bold text-primary">{top3[0].score}</p>
-                    <p className="text-xs text-muted-foreground">{scoreLabel}</p>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    {top3[0].trend === "up" ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className="text-sm text-muted-foreground">vs last month</span>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-
-            {/* 3rd Place */}
-            {top3[2] && (
-              <motion.div
-                key={`${activeTab}-3rd`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="order-3"
-              >
-                <Card className="p-6 text-center space-y-4">
-                  <div className="flex justify-center">{getMedalIcon(3)}</div>
-                  <Avatar className="h-20 w-20 mx-auto">
-                    <AvatarImage src={top3[2].avatar} alt={top3[2].name} />
-                    <AvatarFallback>{top3[2].name.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-bold text-lg">{top3[2].name}</h3>
-                    <p className="text-sm text-muted-foreground">{top3[2].role}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-3xl font-bold text-primary">{top3[2].score}</p>
-                    <p className="text-xs text-muted-foreground">{scoreLabel}</p>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    {top3[2].trend === "up" ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
-                    ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
-                    )}
-                    <span className="text-sm text-muted-foreground">vs last month</span>
-                  </div>
-                </Card>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Positions 4-12 Table */}
-          <Card>
-            <div className="divide-y">
-              <div className="grid grid-cols-12 gap-4 p-4 text-sm font-semibold text-muted-foreground">
-                <div className="col-span-1">Rank</div>
-                <div className="col-span-4">Person</div>
-                <div className="col-span-2">Department</div>
-                <div className="col-span-2 text-right">Score</div>
-                <div className="col-span-2 text-center">Achievements</div>
-                <div className="col-span-1 text-center">Trend</div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-3xl font-bold">Level {profile.level}</p>
+                <p className="text-xs text-muted-foreground">
+                  {profile.xp} / {profile.xpToNextLevel} XP
+                </p>
+                <div className="h-1.5 bg-muted rounded-full overflow-hidden mt-2">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all"
+                    style={{ width: `${(profile.xp / profile.xpToNextLevel) * 100}%` }}
+                  />
+                </div>
               </div>
-
-              {rest.map((person, idx) => (
-                <motion.div
-                  key={person.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-muted/50 transition-colors"
-                >
-                  <div className="col-span-1 font-semibold text-lg">{idx + 4}</div>
-                  <div className="col-span-4 flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={person.avatar} alt={person.name} />
-                      <AvatarFallback>{person.name.split(" ").map((n) => n[0]).join("")}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{person.name}</p>
-                      <p className="text-sm text-muted-foreground">{person.role}</p>
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <Badge variant="secondary">{person.department}</Badge>
-                  </div>
-                  <div className="col-span-2 text-right font-semibold text-lg">{person.score}</div>
-                  <div className="col-span-2 text-center">
-                    <Badge variant="outline">{person.achievements} earned</Badge>
-                  </div>
-                  <div className="col-span-1 flex justify-center">
-                    {person.trend === "up" ? (
-                      <TrendingUp className="h-4 w-4 text-green-500" />
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">This week</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm font-semibold">{profile.weeklyXP} XP</span>
+                    {xpTrend === "up" ? (
+                      <TrendingUp className="h-3.5 w-3.5 text-green-500" />
                     ) : (
-                      <TrendingDown className="h-4 w-4 text-red-500" />
+                      <TrendingDown className="h-3.5 w-3.5 text-red-500" />
                     )}
                   </div>
-                </motion.div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Streak</span>
+                  <span className="text-sm font-semibold">{profile.streak} days</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Achievements</span>
+                  <span className="text-sm font-semibold">
+                    {profile.achievements.filter((a) => a.earned).length}/{profile.achievements.length}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Achievement badges */}
+            <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t">
+              {profile.achievements
+                .filter((a) => a.earned)
+                .map((a) => (
+                  <Badge key={a.id} variant="secondary" className="gap-1">
+                    <span>{a.icon}</span>
+                    {a.title}
+                  </Badge>
+                ))}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Team Highlights — opt-in, no numeric scores */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Users className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium text-muted-foreground">Team Highlights</h3>
+            </div>
+
+            <div className="space-y-3">
+              {teamHighlights.map((person) => (
+                <div key={person.id} className="flex items-center gap-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={person.avatar} alt={person.name} />
+                    <AvatarFallback>
+                      {person.name.split(" ").map((n) => n[0]).join("")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{person.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{person.highlight}</p>
+                  </div>
+                </div>
               ))}
             </div>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </motion.div>
+
+        {/* Department Pulse */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium text-muted-foreground">Department Pulse</h3>
+            </div>
+
+            <div className="space-y-3">
+              {departmentAverages.map((dept) => (
+                <div key={dept.department} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">{dept.department}</span>
+                    <span className="text-muted-foreground">{dept.engagement}% active</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${dept.engagement}%` }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                      className="h-full bg-primary/70 rounded-full"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Contribution Heatmap */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Activity className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium text-muted-foreground">Activity — Last 12 Weeks</h3>
+            </div>
+
+            <ContributionHeatmap data={contributionData} />
+          </Card>
+        </motion.div>
+      </div>
     </motion.div>
   )
 }

@@ -12,27 +12,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Flame, Target, CheckCircle, Zap, Shield } from "lucide-react"
-
-const MOTIVATIONAL_QUOTES = [
-  "Small daily improvements are the key to staggering long-term results.",
-  "The secret of getting ahead is getting started.",
-  "Focus on being productive instead of busy.",
-  "Your only limit is your mind.",
-  "Success is the sum of small efforts repeated day in and day out.",
-  "Don't watch the clock; do what it does — keep going.",
-  "The way to get started is to quit talking and begin doing.",
-  "It's not about having time. It's about making time.",
-  "You don't have to be great to start, but you have to start to be great.",
-  "Productivity is never an accident. It is the result of commitment.",
-]
-
-function getTodayQuote(): string {
-  const dayOfYear = Math.floor(
-    (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) /
-      (1000 * 60 * 60 * 24)
-  )
-  return MOTIVATIONAL_QUOTES[dayOfYear % MOTIVATIONAL_QUOTES.length]
-}
+import { generateInsight } from "@/lib/insights"
 
 function getGreeting(): string {
   const hour = new Date().getHours()
@@ -42,7 +22,7 @@ function getGreeting(): string {
 }
 
 export function DailyCheckin() {
-  const { profile, markCheckedIn, checkDailyReset, checkWeeklyReset } =
+  const { profile, markCheckedIn, checkDailyReset, checkWeeklyReset, checkMonthlyReset } =
     useGamificationStore()
   const tasks = useTaskStore((s) => s.tasks)
   const [open, setOpen] = useState(false)
@@ -54,9 +34,10 @@ export function DailyCheckin() {
   ).length
 
   useEffect(() => {
-    // Run daily/weekly resets
+    // Run daily/weekly/monthly resets
     checkDailyReset()
     checkWeeklyReset()
+    checkMonthlyReset()
 
     // Show check-in if not done today
     if (profile.lastCheckinDate !== today) {
@@ -80,21 +61,19 @@ export function DailyCheckin() {
         </DialogHeader>
 
         <div className="space-y-4 py-2">
-          {/* Streak */}
-          <div className="flex items-center justify-center gap-3 p-4 rounded-lg bg-gradient-to-r from-orange-500/10 to-red-500/10">
-            <Flame className="h-8 w-8 text-orange-500" />
-            <div>
-              <div className="text-2xl font-bold">{profile.streak}-day streak</div>
-              <div className="text-xs text-muted-foreground">
-                {profile.streakFreezes > 0 && (
-                  <span className="inline-flex items-center gap-1">
-                    <Shield className="h-3 w-3 text-blue-500" />
-                    {profile.streakFreezes} freeze{profile.streakFreezes !== 1 ? "s" : ""} available
-                  </span>
-                )}
-              </div>
+          {/* Streak — subtle display */}
+          {profile.streak > 0 && (
+            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <Flame className="h-4 w-4 text-orange-400" />
+              <span>{profile.streak}-day streak</span>
+              {profile.streakFreezes > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <Shield className="h-3 w-3 text-blue-400" />
+                  {profile.streakFreezes}
+                </span>
+              )}
             </div>
-          </div>
+          )}
 
           {/* Today's overview */}
           <div className="grid grid-cols-2 gap-3">
@@ -139,10 +118,10 @@ export function DailyCheckin() {
             </div>
           )}
 
-          {/* Quote */}
+          {/* Personalized insight */}
           <div className="text-center py-2">
-            <p className="text-sm italic text-muted-foreground">
-              &ldquo;{getTodayQuote()}&rdquo;
+            <p className="text-sm text-muted-foreground">
+              {generateInsight(profile)}
             </p>
           </div>
 

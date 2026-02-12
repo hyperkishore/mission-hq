@@ -8,6 +8,7 @@ import { QuickPollWidget } from "@/components/dashboard/quick-poll-widget"
 import { GamificationWidget } from "@/components/dashboard/gamification-widget"
 import { ProgressRings } from "@/components/shared/progress-rings"
 import { GiveShoutoutDialog } from "@/components/shared/give-shoutout-dialog"
+import { CoffeeRouletteWidget } from "@/components/dashboard/coffee-roulette-widget"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
@@ -27,6 +28,9 @@ function SidebarWidgets() {
       </div>
       <div className="flex justify-center">
         <GiveShoutoutDialog />
+      </div>
+      <div className="rounded-lg border bg-card p-1">
+        <CoffeeRouletteWidget />
       </div>
       <div className="rounded-lg border bg-card p-1">
         <QuickPollWidget />

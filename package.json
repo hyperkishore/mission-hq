@@ -1,6 +1,6 @@
 {
   "name": "mission-hq-temp",
-  "version": "0.2.07",
+  "version": "0.3.00",
   "private": true,
   "scripts": {
     "dev": "next dev",

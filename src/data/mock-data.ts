@@ -154,6 +154,13 @@ export const gamificationProfile: GamificationProfile = {
   lastCheckinDate: null,
   // Unlockable themes
   unlockedThemes: ['light', 'dark', 'unusual'],
+  // Personal goals (defaults)
+  personalGoals: { tasks: 5, focusSessions: 4, socialEngagements: 3 },
+  // Smart recognition
+  lastCompletedTask: null,
+  // Monthly wrapped
+  monthlyStats: null,
+  lastMonthlyReset: null,
   achievements: [
     {
       id: 'a1',
@@ -926,6 +933,74 @@ export const teamUpdates: TeamUpdate[] = [
     createdAt: new Date(Date.now() - 43200000).toISOString(), // 12 hours ago
   },
 ]
+
+// Contribution heatmap data — 84 days (12 weeks)
+function generateContributionData(): import('@/types').ContributionDay[] {
+  const days: import('@/types').ContributionDay[] = []
+  const now = new Date()
+  for (let i = 83; i >= 0; i--) {
+    const date = new Date(now)
+    date.setDate(date.getDate() - i)
+    // Deterministic pseudo-random based on date
+    const seed = date.getDate() * 13 + date.getMonth() * 7 + date.getDay() * 3
+    const isWeekend = date.getDay() === 0 || date.getDay() === 6
+    let count = 0
+    if (!isWeekend) {
+      count = [0, 1, 2, 3, 4, 2, 3, 1, 4, 2, 3, 1, 0, 2][(seed % 14)]
+    } else {
+      count = seed % 3 === 0 ? 1 : 0
+    }
+    days.push({
+      date: date.toISOString().split('T')[0],
+      count,
+    })
+  }
+  return days
+}
+
+export const contributionData = generateContributionData()
+
+// Department averages for leaderboard
+export const departmentAverages: { department: string; engagement: number; members: number }[] = [
+  { department: 'Engineering', engagement: 78, members: 6 },
+  { department: 'Design', engagement: 85, members: 4 },
+  { department: 'Product', engagement: 72, members: 2 },
+  { department: 'Marketing', engagement: 68, members: 1 },
+  { department: 'Data', engagement: 82, members: 1 },
+  { department: 'Customer Success', engagement: 75, members: 1 },
+]
+
+// Monthly stats for Wrapped
+export const monthlyStats: import('@/types').MonthlyStats = {
+  tasksCompleted: 87,
+  tasksTrend: 12,
+  focusMinutes: 2340,
+  focusTrend: -5,
+  shoutoutsGiven: 14,
+  shoutoutsReceived: 9,
+  mostProductiveDay: 'Tuesday',
+  topStreak: 18,
+  totalXP: 4250,
+}
+
+// Fun facts for people (for coffee roulette)
+export const funFacts: Record<string, string> = {
+  p1: 'Has visited 23 countries and counting',
+  p2: 'Plays jazz guitar on weekends',
+  p3: 'Ran a marathon in under 4 hours',
+  p4: 'Makes award-winning kimchi',
+  p5: 'Former competitive rock climber',
+  p6: 'Collects vintage mechanical keyboards',
+  p7: 'Teaches yoga on Saturday mornings',
+  p8: 'Built a treehouse for their kids last summer',
+  p9: 'Has a pilot license',
+  p10: 'Writes a food blog with 5K followers',
+  p11: 'Competed in a national chess tournament',
+  p12: 'Volunteers at an animal shelter every month',
+  p13: 'Is learning to play the cello',
+  p14: 'Surfs every morning before work',
+  p15: 'Has a black belt in taekwondo',
+}
 
 // Alias for backwards compatibility
 export const socialPosts = posts

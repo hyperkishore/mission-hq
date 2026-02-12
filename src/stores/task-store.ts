@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Task } from '@/types'
 import { tasks as initialTasks } from '@/data/mock-data'
+import { useGamificationStore } from '@/stores/gamification-store'
 
 type TaskFilter = 'today' | 'high' | 'all' | 'completed'
 
@@ -21,12 +22,18 @@ export const useTaskStore = create<TaskStore>()(
       tasks: initialTasks,
       filter: 'today',
       setFilter: (filter) => set({ filter }),
-      toggleTask: (id) =>
+      toggleTask: (id) => {
+        const task = get().tasks.find((t) => t.id === id)
+        if (task && !task.completed) {
+          // Task being completed — trigger smart recognition
+          useGamificationStore.getState().setLastCompletedTask(task.title)
+        }
         set((state) => ({
           tasks: state.tasks.map((t) =>
             t.id === id ? { ...t, completed: !t.completed } : t
           ),
-        })),
+        }))
+      },
       addTask: (task) => set((state) => ({ tasks: [task, ...state.tasks] })),
       deleteTask: (id) =>
         set((state) => ({ tasks: state.tasks.filter((t) => t.id !== id) })),

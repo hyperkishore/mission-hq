@@ -9,7 +9,14 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Trophy, Flame, CheckCircle, Star, Zap } from "lucide-react"
+import { TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { generateWeeklyNarrative } from "@/lib/insights"
+
+function TrendIcon({ value }: { value: number }) {
+  if (value > 0) return <TrendingUp className="h-3.5 w-3.5 text-green-500" />
+  if (value < 0) return <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+  return <Minus className="h-3.5 w-3.5 text-muted-foreground" />
+}
 
 export function WeeklyRecap() {
   const { profile, dismissWeeklyRecap } = useGamificationStore()
@@ -17,67 +24,65 @@ export function WeeklyRecap() {
 
   if (!recap) return null
 
+  const narrative = generateWeeklyNarrative(recap, profile)
+
   return (
     <Dialog open={!!recap} onOpenChange={(open) => !open && dismissWeeklyRecap()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
-            Weekly Recap
+            Your Week in Review
           </DialogTitle>
           <DialogDescription className="text-center">
-            Here&apos;s how you did last week
+            Here&apos;s how last week went
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <Zap className="h-5 w-5 text-yellow-500 shrink-0" />
-              <div>
-                <div className="text-lg font-bold">{recap.xpEarned}</div>
-                <div className="text-xs text-muted-foreground">XP Earned</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-              <div>
-                <div className="text-lg font-bold">{recap.tasksCompleted}</div>
-                <div className="text-xs text-muted-foreground">Tasks Done</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <Trophy className="h-5 w-5 text-blue-500 shrink-0" />
-              <div>
-                <div className="text-lg font-bold">{recap.focusSessions}</div>
-                <div className="text-xs text-muted-foreground">Focus Sessions</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <Star className="h-5 w-5 text-amber-500 shrink-0" />
-              <div>
-                <div className="text-lg font-bold">{recap.shoutoutsGiven}</div>
-                <div className="text-xs text-muted-foreground">Shoutouts</div>
-              </div>
-            </div>
+          {/* Narrative sentences */}
+          <div className="space-y-2">
+            {narrative.map((sentence, i) => (
+              <p key={i} className="text-sm text-muted-foreground leading-relaxed">
+                {sentence}
+              </p>
+            ))}
           </div>
 
-          <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-primary/10">
-            <Flame className="h-5 w-5 text-orange-500" />
-            <span className="text-sm font-medium">
-              {recap.streakDays}-day streak maintained
-            </span>
+          {/* Compact stat row with trend arrows */}
+          <div className="grid grid-cols-4 gap-2 pt-2 border-t">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <span className="text-lg font-bold">{recap.xpEarned}</span>
+                <TrendIcon value={recap.xpEarned > 300 ? 1 : -1} />
+              </div>
+              <p className="text-[10px] text-muted-foreground">XP</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <span className="text-lg font-bold">{recap.tasksCompleted}</span>
+                <TrendIcon value={recap.tasksCompleted > 5 ? 1 : 0} />
+              </div>
+              <p className="text-[10px] text-muted-foreground">Tasks</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <span className="text-lg font-bold">{recap.focusSessions}</span>
+                <TrendIcon value={recap.focusSessions > 3 ? 1 : -1} />
+              </div>
+              <p className="text-[10px] text-muted-foreground">Focus</p>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-1">
+                <span className="text-lg font-bold">{recap.streakDays}</span>
+                <TrendIcon value={recap.streakDays > 7 ? 1 : 0} />
+              </div>
+              <p className="text-[10px] text-muted-foreground">Streak</p>
+            </div>
           </div>
-
-          <p className="text-center text-sm text-muted-foreground">
-            New week, fresh start. Your weekly XP has been reset — time to climb the leaderboard!
-          </p>
         </div>
 
         <Button onClick={dismissWeeklyRecap} className="w-full">
-          Let&apos;s go!
+          Start the week
         </Button>
       </DialogContent>
     </Dialog>

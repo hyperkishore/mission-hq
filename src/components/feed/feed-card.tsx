@@ -5,6 +5,7 @@ import { SocialCard } from "./social-card"
 import { ActivityCard } from "./activity-card"
 import { AnnouncementCard } from "./announcement-card"
 import { ShoutoutCard } from "./shoutout-card"
+import { StandupCard } from "./standup-card"
 
 export function FeedCard({ item }: { item: FeedItem }) {
   switch (item.type) {
@@ -16,5 +17,7 @@ export function FeedCard({ item }: { item: FeedItem }) {
       return <AnnouncementCard item={item} />
     case "shoutout":
       return <ShoutoutCard item={item} />
+    case "standup":
+      return <StandupCard item={item} />
   }
 }

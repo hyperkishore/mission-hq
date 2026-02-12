@@ -16,20 +16,12 @@ export function useProactiveNudges() {
       addNotification(notification)
     }
 
-    // Streak at risk: if last activity was yesterday and it's after 6 PM
     const hour = new Date().getHours()
     const today = new Date().toISOString().split('T')[0]
 
-    if (profile.lastActivityDate && profile.lastActivityDate !== today && hour >= 18) {
-      nudge('streak-risk', {
-        title: 'Streak at risk!',
-        description: `Your ${profile.streak}-day streak will reset at midnight. Do any activity to keep it alive!`,
-        type: 'warning',
-      })
-    }
-
-    // Achievement close: Task Slayer at 80%+
-    if (profile.dailyTasksCompleted >= 4 && profile.dailyTasksCompleted < 5) {
+    // Achievement close: Task goal at n-1
+    const goals = profile.personalGoals
+    if (profile.dailyTasksCompleted === goals.tasks - 1) {
       nudge('almost-tasks', {
         title: 'Almost there!',
         description: 'Complete 1 more task to hit your daily goal!',
@@ -38,7 +30,7 @@ export function useProactiveNudges() {
     }
 
     // Focus goal close
-    if (profile.dailyFocusSessions >= 3 && profile.dailyFocusSessions < 4) {
+    if (profile.dailyFocusSessions === goals.focusSessions - 1) {
       nudge('almost-focus', {
         title: 'One more session!',
         description: 'Complete 1 more focus session to hit your daily goal!',
@@ -48,9 +40,9 @@ export function useProactiveNudges() {
 
     // All goals complete
     if (
-      profile.dailyTasksCompleted >= 5 &&
-      profile.dailyFocusSessions >= 4 &&
-      profile.dailySocialEngagements >= 3
+      profile.dailyTasksCompleted >= goals.tasks &&
+      profile.dailyFocusSessions >= goals.focusSessions &&
+      profile.dailySocialEngagements >= goals.socialEngagements
     ) {
       nudge('all-goals', {
         title: 'All daily goals complete!',

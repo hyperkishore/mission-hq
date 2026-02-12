@@ -27,7 +27,7 @@ export function GiveShoutoutDialog({ children }: { children?: React.ReactNode })
   const [selectedEmoji, setSelectedEmoji] = useState("🌟")
   const [search, setSearch] = useState("")
 
-  const { addXP, recordDailyAction } = useGamificationStore()
+  const { recordDailyAction } = useGamificationStore()
 
   const filteredPeople = people.filter(
     (p) =>
@@ -55,7 +55,6 @@ export function GiveShoutoutDialog({ children }: { children?: React.ReactNode })
 
     useFeedStore.setState((state) => ({ items: [shoutout, ...state.items] }))
     recordDailyAction("shoutout")
-    addXP(15, "Gave a shoutout")
     toast.success(`Shoutout sent to ${person.name}!`)
 
     // Reset
@@ -177,7 +176,7 @@ export function GiveShoutoutDialog({ children }: { children?: React.ReactNode })
 
               <Button onClick={handleSubmit} className="w-full">
                 <Star className="h-4 w-4 mr-1.5" />
-                Send Shoutout (+15 XP)
+                Send Shoutout
               </Button>
             </>
           )}

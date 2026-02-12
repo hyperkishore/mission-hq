@@ -151,6 +151,13 @@ export interface CalendarEvent {
   attendees?: string[];
 }
 
+// Personal daily goals — user-configurable
+export interface PersonalGoals {
+  tasks: number
+  focusSessions: number
+  socialEngagements: number
+}
+
 // GamificationProfile
 export interface GamificationProfile {
   level: number;
@@ -179,6 +186,13 @@ export interface GamificationProfile {
   lastCheckinDate: string | null; // ISO date
   // Unlockable themes
   unlockedThemes: string[];
+  // Personal goals
+  personalGoals: PersonalGoals;
+  // Last completed task name (for smart recognition)
+  lastCompletedTask: string | null;
+  // Monthly wrapped
+  monthlyStats: MonthlyStats | null;
+  lastMonthlyReset: string | null; // "YYYY-MM"
 }
 
 export interface Achievement {
@@ -203,6 +217,25 @@ export interface WeeklyRecap {
   levelUps: number;
 }
 
+// Contribution heatmap day
+export interface ContributionDay {
+  date: string // ISO date
+  count: number // activity count (0-4 scale: none, low, medium, high, intense)
+}
+
+// Monthly stats for Wrapped feature
+export interface MonthlyStats {
+  tasksCompleted: number
+  tasksTrend: number // percentage vs last month
+  focusMinutes: number
+  focusTrend: number
+  shoutoutsGiven: number
+  shoutoutsReceived: number
+  mostProductiveDay: string // e.g. "Tuesday"
+  topStreak: number
+  totalXP: number
+}
+
 // AnalyticsDataPoint for charts
 export interface AnalyticsDataPoint {
   date: string;
@@ -224,7 +257,7 @@ export interface User {
 }
 
 // Feed Item Types (Unified Timeline)
-export type FeedItemType = "social" | "activity" | "announcement" | "shoutout"
+export type FeedItemType = "social" | "activity" | "announcement" | "shoutout" | "standup"
 
 export interface FeedItemBase {
   id: string
@@ -271,4 +304,10 @@ export interface ShoutoutFeedItem extends FeedItemBase {
   emoji: string
 }
 
-export type FeedItem = SocialFeedItem | ActivityFeedItem | AnnouncementFeedItem | ShoutoutFeedItem
+export interface StandupFeedItem extends FeedItemBase {
+  type: "standup"
+  author: { name: string; avatar: string; role: string }
+  content: string // 280 char max
+}
+
+export type FeedItem = SocialFeedItem | ActivityFeedItem | AnnouncementFeedItem | ShoutoutFeedItem | StandupFeedItem
