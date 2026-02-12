@@ -191,7 +191,7 @@ export const useGamificationStore = create<GamificationStore>()(
         return false
       },
 
-      recordDailyAction: (type) => {
+      recordDailyAction: (type: 'task' | 'focus' | 'shoutout' | 'social') => {
         const { profile } = get()
         const updates: Partial<GamificationProfile> = {}
 
@@ -213,7 +213,7 @@ export const useGamificationStore = create<GamificationStore>()(
         set({ profile: { ...profile, ...updates } })
       },
 
-      addXP: (amount, source) => {
+      addXP: (amount: number, source?: string) => {
         const { profile, updateStreak, checkAchievements } = get()
 
         // Update streak on any XP-earning action
@@ -308,7 +308,7 @@ export const useGamificationStore = create<GamificationStore>()(
       checkAchievements: () => {
         const { profile, unlockAchievement } = get()
         const earned = (id: string) =>
-          profile.achievements.find((a) => a.id === id)?.earned
+          profile.achievements.find((a: { id: string; earned: boolean }) => a.id === id)?.earned
 
         // Focus Master: 25 sessions (check focus store total)
         // We can't directly access focus store, but we track daily
@@ -331,11 +331,11 @@ export const useGamificationStore = create<GamificationStore>()(
         }
       },
 
-      unlockAchievement: (id) =>
-        set((state) => ({
+      unlockAchievement: (id: string) =>
+        set((state: GamificationStore) => ({
           profile: {
             ...state.profile,
-            achievements: state.profile.achievements.map((achievement) =>
+            achievements: state.profile.achievements.map((achievement: { id: string; earned: boolean; earnedAt?: string }) =>
               achievement.id === id
                 ? { ...achievement, earned: true, earnedAt: new Date().toISOString() }
                 : achievement
@@ -344,7 +344,7 @@ export const useGamificationStore = create<GamificationStore>()(
         })),
 
       markCheckedIn: () =>
-        set((state) => ({
+        set((state: GamificationStore) => ({
           profile: {
             ...state.profile,
             lastCheckinDate: getToday(),
@@ -352,13 +352,30 @@ export const useGamificationStore = create<GamificationStore>()(
         })),
 
       dismissWeeklyRecap: () =>
-        set((state) => ({
+        set((state: GamificationStore) => ({
           profile: {
             ...state.profile,
             weeklyRecap: null,
           },
         })),
     }),
-    { name: 'mission-hq-gamification' }
+    {
+      name: 'mission-hq-gamification',
+      merge: (persisted: any, current: any) => {
+        // Deep merge profile so new fields get defaults from initialProfile
+        const persistedProfile = persisted?.profile || {}
+        return {
+          ...current,
+          ...persisted,
+          profile: {
+            ...current.profile,
+            ...persistedProfile,
+            // Ensure arrays aren't lost
+            achievements: persistedProfile.achievements || current.profile.achievements,
+            unlockedThemes: persistedProfile.unlockedThemes || current.profile.unlockedThemes,
+          },
+        }
+      },
+    }
   )
 )
