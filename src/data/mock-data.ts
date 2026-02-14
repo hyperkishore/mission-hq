@@ -192,6 +192,9 @@ export const gamificationProfile: GamificationProfile = {
       description: 'Maintain a 30-day productivity streak',
       icon: '🔥',
       earned: false,
+      progress: 40,
+      target: 30,
+      current: 12,
     },
     {
       id: 'a5',
@@ -199,6 +202,9 @@ export const gamificationProfile: GamificationProfile = {
       description: 'Complete 100 high-priority tasks',
       icon: '⚔️',
       earned: false,
+      progress: 18,
+      target: 100,
+      current: 18,
     },
     {
       id: 'a6',
@@ -206,6 +212,49 @@ export const gamificationProfile: GamificationProfile = {
       description: 'Complete all wellness challenges for a month',
       icon: '💪',
       earned: false,
+      progress: 55,
+      target: 30,
+      current: 16,
+    },
+    {
+      id: 'a7',
+      title: 'Social Butterfly',
+      description: 'Engage with 200 social posts',
+      icon: '🦋',
+      earned: false,
+      progress: 32,
+      target: 200,
+      current: 64,
+    },
+    {
+      id: 'a8',
+      title: 'Night Owl',
+      description: 'Complete 10 tasks after 8 PM',
+      icon: '🦉',
+      earned: false,
+      progress: 70,
+      target: 10,
+      current: 7,
+    },
+    {
+      id: 'a9',
+      title: 'Helping Hand',
+      description: 'Give 100 shoutouts to teammates',
+      icon: '🙌',
+      earned: false,
+      progress: 24,
+      target: 100,
+      current: 24,
+    },
+    {
+      id: 'a10',
+      title: 'Deep Diver',
+      description: 'Accumulate 50 hours of focus time',
+      icon: '🤿',
+      earned: false,
+      progress: 62,
+      target: 3000,
+      current: 1860,
     },
   ],
 }
@@ -469,58 +518,62 @@ export const wellnessChallenges: WellnessChallenge[] = [
   },
 ]
 
-// Mock Analytics Data (last 7 days)
-export const analyticsData: AnalyticsDataPoint[] = [
-  {
-    date: new Date(Date.now() - 6 * 86400000).toISOString().split('T')[0],
-    focusMinutes: 180,
-    tasksCompleted: 8,
-    meetings: 3,
-    productivity: 85,
-  },
-  {
-    date: new Date(Date.now() - 5 * 86400000).toISOString().split('T')[0],
-    focusMinutes: 210,
-    tasksCompleted: 12,
-    meetings: 2,
-    productivity: 92,
-  },
-  {
-    date: new Date(Date.now() - 4 * 86400000).toISOString().split('T')[0],
-    focusMinutes: 150,
-    tasksCompleted: 6,
-    meetings: 5,
-    productivity: 68,
-  },
-  {
-    date: new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
-    focusMinutes: 240,
-    tasksCompleted: 15,
-    meetings: 1,
-    productivity: 96,
-  },
-  {
-    date: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0],
-    focusMinutes: 195,
-    tasksCompleted: 10,
-    meetings: 4,
-    productivity: 78,
-  },
-  {
-    date: new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0],
-    focusMinutes: 165,
-    tasksCompleted: 7,
-    meetings: 3,
-    productivity: 72,
-  },
-  {
-    date: new Date().toISOString().split('T')[0],
-    focusMinutes: 220,
-    tasksCompleted: 11,
-    meetings: 2,
-    productivity: 88,
-  },
-]
+// Mock Analytics Data — 30 days (deterministic pseudo-random)
+function generateAnalyticsData(days: number): AnalyticsDataPoint[] {
+  const result: AnalyticsDataPoint[] = []
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(Date.now() - i * 86400000)
+    const dayOfWeek = date.getDay()
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+    // Deterministic seed based on date
+    const seed = date.getDate() * 17 + date.getMonth() * 31 + dayOfWeek * 7
+
+    const focusBase = isWeekend ? 60 : 160
+    const focusVariation = [20, 40, -10, 50, 30, -20, 60, 10, 45, -15, 35, 25, 55, -5]
+    const focusMinutes = Math.max(30, focusBase + focusVariation[seed % 14])
+
+    const tasksBase = isWeekend ? 2 : 8
+    const tasksVariation = [0, 2, 4, -1, 3, 5, 1, -2, 6, 3, 2, 7, 1, 4]
+    const tasksCompleted = Math.max(0, tasksBase + tasksVariation[seed % 14])
+
+    const meetingsBase = isWeekend ? 0 : 3
+    const meetingsVariation = [0, -1, 1, 2, -2, 1, 0, 3, -1, 2, 1, 0, -1, 2]
+    const meetings = Math.max(0, meetingsBase + meetingsVariation[seed % 14])
+
+    const productivityBase = isWeekend ? 55 : 75
+    const productivityVariation = [5, 10, -5, 15, 8, -8, 12, 3, 18, -3, 7, 20, 2, 10]
+    const productivity = Math.min(100, Math.max(20, productivityBase + productivityVariation[seed % 14]))
+
+    result.push({
+      date: date.toISOString().split('T')[0],
+      focusMinutes,
+      tasksCompleted,
+      meetings,
+      productivity,
+    })
+  }
+  return result
+}
+
+export const analyticsData: AnalyticsDataPoint[] = generateAnalyticsData(30)
+
+// Daily XP data — 30 days
+function generateDailyXPData(days: number): { date: string; xp: number }[] {
+  const result: { date: string; xp: number }[] = []
+  for (let i = days - 1; i >= 0; i--) {
+    const date = new Date(Date.now() - i * 86400000)
+    const dayOfWeek = date.getDay()
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+    const seed = date.getDate() * 11 + date.getMonth() * 23 + dayOfWeek * 5
+    const base = isWeekend ? 30 : 80
+    const variation = [10, 25, 40, 15, -10, 30, 50, 20, 35, -5, 45, 10, 55, 20]
+    const xp = Math.max(5, base + variation[seed % 14])
+    result.push({ date: date.toISOString().split('T')[0], xp })
+  }
+  return result
+}
+
+export const dailyXPData = generateDailyXPData(30)
 
 // Mock Calendar Events
 export const calendarEvents: CalendarEvent[] = [

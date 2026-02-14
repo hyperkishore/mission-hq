@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { UnifiedTimeline } from "@/components/feed/unified-timeline"
+import { useUserStore } from "@/stores/user-store"
 
 function getGreeting() {
   const hour = new Date().getHours()
@@ -19,6 +20,8 @@ function getFormattedDate() {
 }
 
 export default function DashboardPage() {
+  const firstName = useUserStore((s) => s.firstName())
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -27,7 +30,7 @@ export default function DashboardPage() {
     >
       <div className="mb-6">
         <h2 className="text-2xl font-bold tracking-tight">
-          {getGreeting()}, Alex
+          {getGreeting()}, {firstName}
         </h2>
         <p className="text-sm text-muted-foreground">
           {getFormattedDate()} &mdash; Here&apos;s what&apos;s happening at Acme Corp

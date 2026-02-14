@@ -2,16 +2,15 @@
 
 import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
-import { Search, Mail, MapPin, Clock, Star } from "lucide-react"
+import Link from "next/link"
+import { Search, Mail } from "lucide-react"
 import { PageHeader } from "@/components/shared/page-header"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { people, shoutouts } from "@/data/mock-data"
-import type { Person } from "@/types"
+import { people } from "@/data/mock-data"
 
 const statusColors = {
   active: "bg-green-500",
@@ -25,7 +24,6 @@ const departments = ["All", ...Array.from(new Set(people.map((p) => p.department
 export default function TeamPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [deptFilter, setDeptFilter] = useState("All")
-  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
 
   const filteredPeople = useMemo(() => {
     let result = people
@@ -46,13 +44,6 @@ export default function TeamPage() {
 
     return result
   }, [searchQuery, deptFilter])
-
-  const personShoutouts = useMemo(() => {
-    if (!selectedPerson) return []
-    return shoutouts.filter(
-      (s) => s.to.name === selectedPerson.name || s.from.name === selectedPerson.name
-    )
-  }, [selectedPerson])
 
   const container = {
     hidden: { opacity: 0 },
@@ -109,52 +100,47 @@ export default function TeamPage() {
       >
         {filteredPeople.map((person) => (
           <motion.div key={person.id} variants={item}>
-            <Card
-              className="p-6 hover:shadow-lg transition-shadow cursor-pointer hover:border-primary/50"
-              onClick={() => setSelectedPerson(person)}
-            >
-              <div className="flex flex-col items-center text-center space-y-3">
-                <div className="relative">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={person.avatar} alt={person.name} />
-                    <AvatarFallback>
-                      {person.name.split(" ").map((n) => n[0]).join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span
-                    className={`absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-background ${statusColors[person.status]}`}
-                  />
+            <Link href={`/team/${person.id}`}>
+              <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer hover:border-primary/50">
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="relative">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={person.avatar} alt={person.name} />
+                      <AvatarFallback>
+                        {person.name.split(" ").map((n) => n[0]).join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span
+                      className={`absolute bottom-0 right-0 h-4 w-4 rounded-full border-2 border-background ${statusColors[person.status]}`}
+                    />
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold">{person.name}</h3>
+                    <p className="text-sm text-muted-foreground">{person.role}</p>
+                  </div>
+
+                  <Badge variant="secondary">{person.department}</Badge>
+
+                  <p className="text-xs text-muted-foreground">
+                    {person.location}<br />{person.timezone}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {person.skills.slice(0, 3).map((skill, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  <span className="flex items-center gap-1 text-xs text-primary">
+                    <Mail className="h-3 w-3" />
+                    {person.email}
+                  </span>
                 </div>
-
-                <div>
-                  <h3 className="font-semibold">{person.name}</h3>
-                  <p className="text-sm text-muted-foreground">{person.role}</p>
-                </div>
-
-                <Badge variant="secondary">{person.department}</Badge>
-
-                <p className="text-xs text-muted-foreground">
-                  {person.location}<br />{person.timezone}
-                </p>
-
-                <div className="flex flex-wrap gap-1 justify-center">
-                  {person.skills.slice(0, 3).map((skill, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-
-                <a
-                  href={`mailto:${person.email}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex items-center gap-1 text-xs text-primary hover:underline"
-                >
-                  <Mail className="h-3 w-3" />
-                  {person.email}
-                </a>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           </motion.div>
         ))}
       </motion.div>
@@ -166,81 +152,6 @@ export default function TeamPage() {
           </p>
         </div>
       )}
-
-      {/* Profile Modal */}
-      <Dialog open={!!selectedPerson} onOpenChange={(open) => !open && setSelectedPerson(null)}>
-        <DialogContent className="sm:max-w-md">
-          {selectedPerson && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="sr-only">{selectedPerson.name}</DialogTitle>
-              </DialogHeader>
-              <div className="flex flex-col items-center text-center space-y-4">
-                <div className="relative">
-                  <Avatar className="h-20 w-20">
-                    <AvatarImage src={selectedPerson.avatar} alt={selectedPerson.name} />
-                    <AvatarFallback className="text-xl">
-                      {selectedPerson.name.split(" ").map((n) => n[0]).join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span
-                    className={`absolute bottom-0 right-0 h-5 w-5 rounded-full border-2 border-background ${statusColors[selectedPerson.status]}`}
-                  />
-                </div>
-
-                <div>
-                  <h2 className="text-lg font-bold">{selectedPerson.name}</h2>
-                  <p className="text-sm text-muted-foreground">{selectedPerson.role}</p>
-                  <Badge variant="secondary" className="mt-1">{selectedPerson.department}</Badge>
-                </div>
-
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5" />
-                    <span>{selectedPerson.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" />
-                    <span>{selectedPerson.timezone}</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5 justify-center">
-                  {selectedPerson.skills.map((skill, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-
-                {personShoutouts.length > 0 && (
-                  <div className="w-full space-y-2 pt-2 border-t">
-                    <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1 justify-center">
-                      <Star className="h-3 w-3" /> Recent Shoutouts
-                    </p>
-                    {personShoutouts.slice(0, 2).map((s, idx) => (
-                      <div key={idx} className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-2 text-left">
-                        &ldquo;{s.message}&rdquo;
-                        <span className="block mt-1 font-medium text-foreground/70">
-                          {s.from.name} &rarr; {s.to.name}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <a
-                  href={`mailto:${selectedPerson.email}`}
-                  className="flex items-center gap-1.5 text-sm text-primary hover:underline"
-                >
-                  <Mail className="h-4 w-4" />
-                  {selectedPerson.email}
-                </a>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </motion.div>
   )
 }

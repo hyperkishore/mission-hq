@@ -2,6 +2,7 @@
 
 import {
   Home,
+  Award,
   BarChart3,
   Calendar,
   Users,
@@ -23,6 +24,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
@@ -34,6 +36,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useUserStore } from "@/stores/user-store"
+import { useTaskStore } from "@/stores/task-store"
 
 const navGroups = [
   {
@@ -46,6 +50,7 @@ const navGroups = [
     label: "Productivity",
     items: [
       { title: "Analytics", url: "/analytics", icon: BarChart3 },
+      { title: "Achievements", url: "/achievements", icon: Award },
       { title: "Calendar", url: "/calendar", icon: Calendar },
     ],
   },
@@ -66,6 +71,11 @@ const navGroups = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { profile: userProfile } = useUserStore()
+  const initials = userProfile.name.split(' ').map((n) => n[0]).join('').slice(0, 2)
+  const highPriorityCount = useTaskStore((s) =>
+    s.tasks.filter((t) => t.priority === 'high' && !t.completed).length
+  )
 
   return (
     <Sidebar collapsible="icon" variant="sidebar">
@@ -106,6 +116,11 @@ export function AppSidebar() {
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
+                    {item.title === "Home" && highPriorityCount > 0 && (
+                      <SidebarMenuBadge className="bg-red-500 text-white text-[10px]">
+                        {highPriorityCount}
+                      </SidebarMenuBadge>
+                    )}
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
@@ -144,15 +159,15 @@ export function AppSidebar() {
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage
-                      src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex"
-                      alt="Alex Chen"
+                      src={userProfile.avatar}
+                      alt={userProfile.name}
                     />
-                    <AvatarFallback className="rounded-lg">AC</AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Alex Chen</span>
+                    <span className="truncate font-semibold">{userProfile.name}</span>
                     <span className="truncate text-xs text-muted-foreground">
-                      Sr. Product Designer
+                      {userProfile.role}
                     </span>
                   </div>
                 </SidebarMenuButton>

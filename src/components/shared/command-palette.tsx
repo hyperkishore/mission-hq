@@ -16,6 +16,7 @@ import { useNotificationStore } from "@/stores/notification-store"
 import { useFocusStore } from "@/stores/focus-store"
 import {
   Home,
+  Award,
   BarChart3,
   Calendar,
   Users,
@@ -36,6 +37,7 @@ import { toast } from "sonner"
 const pages = [
   { name: "Home", icon: Home, url: "/dashboard" },
   { name: "Analytics", icon: BarChart3, url: "/analytics" },
+  { name: "Achievements", icon: Award, url: "/achievements" },
   { name: "Calendar", icon: Calendar, url: "/calendar" },
   { name: "Team", icon: Users, url: "/team" },
   { name: "Leaderboard", icon: Trophy, url: "/leaderboard" },

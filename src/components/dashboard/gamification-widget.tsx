@@ -87,9 +87,17 @@ export function GamificationWidget() {
 
         {/* Achievements Preview */}
         <div className="space-y-2">
-          <h4 className="text-xs font-medium text-muted-foreground">
-            Achievements
-          </h4>
+          <div className="flex items-center justify-between">
+            <h4 className="text-xs font-medium text-muted-foreground">
+              Achievements
+            </h4>
+            <Link
+              href="/achievements"
+              className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+            >
+              View All
+            </Link>
+          </div>
           <div className="grid grid-cols-2 gap-2">
             {profile.achievements.slice(0, 4).map((achievement, index) => {
               const Icon = LEVEL_ICONS[index % LEVEL_ICONS.length]

@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { FeedItem, FeedItemType, SocialFeedItem } from '@/types'
 import { generateFeedItems } from '@/data/feed-data'
 import { currentUser } from '@/data/mock-data'
+import { useUserStore } from '@/stores/user-store'
 
 interface FeedStore {
   items: FeedItem[]
@@ -30,11 +31,16 @@ export const useFeedStore = create<FeedStore>()(
 
       addPost: (content) =>
         set((state) => {
+          const userProfile = useUserStore.getState().profile
           const newItem: SocialFeedItem = {
             id: `feed-social-sp${Date.now()}`,
             type: 'social',
             createdAt: new Date().toISOString(),
-            author: currentUser,
+            author: {
+              name: userProfile.name,
+              avatar: userProfile.avatar,
+              role: userProfile.role,
+            },
             content,
             likes: 0,
             liked: false,

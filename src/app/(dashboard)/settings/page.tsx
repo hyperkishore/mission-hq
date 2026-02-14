@@ -9,10 +9,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
-import { Sun, Moon, Zap, Keyboard, Command, RotateCcw, Lock, Palette } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Sun, Moon, Zap, Keyboard, Command, RotateCcw, Lock, Palette, Pencil } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { useGamificationStore, THEME_UNLOCK_LEVELS } from "@/stores/gamification-store"
+import { useUserStore } from "@/stores/user-store"
 
 const baseThemes = [
   { value: "light", label: "Light", icon: Sun },
@@ -64,6 +66,24 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme()
   const { prefs, toggle } = useNotificationPreferences()
   const { profile } = useGamificationStore()
+  const { profile: userProfile, updateProfile } = useUserStore()
+  const [editing, setEditing] = useState(false)
+  const [editName, setEditName] = useState(userProfile.name)
+  const [editEmail, setEditEmail] = useState(userProfile.email)
+  const [editRole, setEditRole] = useState(userProfile.role)
+
+  const handleSave = () => {
+    updateProfile({ name: editName, email: editEmail, role: editRole })
+    setEditing(false)
+    toast.success("Profile updated")
+  }
+
+  const handleCancel = () => {
+    setEditName(userProfile.name)
+    setEditEmail(userProfile.email)
+    setEditRole(userProfile.role)
+    setEditing(false)
+  }
 
   return (
     <motion.div
@@ -78,21 +98,64 @@ export default function SettingsPage() {
 
       {/* Profile */}
       <Card className="p-6">
-        <h3 className="text-sm font-semibold mb-4">Profile</h3>
-        <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex"
-              alt="Alex Chen"
-            />
-            <AvatarFallback className="text-lg">AC</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-semibold">Alex Chen</p>
-            <p className="text-sm text-muted-foreground">alex.chen@acme.corp</p>
-            <Badge variant="secondary" className="mt-1">Sr. Product Designer</Badge>
-          </div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold">Profile</h3>
+          {!editing && (
+            <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
+              <Pencil className="h-3.5 w-3.5 mr-1.5" />
+              Edit
+            </Button>
+          )}
         </div>
+        {editing ? (
+          <div className="space-y-3">
+            <div className="flex items-center gap-4 mb-4">
+              <Avatar className="h-16 w-16">
+                <AvatarImage
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${editName.split(' ')[0]}`}
+                  alt={editName}
+                />
+                <AvatarFallback className="text-lg">
+                  {editName.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+                </AvatarFallback>
+              </Avatar>
+              <p className="text-xs text-muted-foreground">Avatar updates based on your name</p>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Name</label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Email</label>
+              <Input value={editEmail} onChange={(e) => setEditEmail(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground">Role</label>
+              <Input value={editRole} onChange={(e) => setEditRole(e.target.value)} />
+            </div>
+            <div className="flex gap-2 pt-1">
+              <Button size="sm" onClick={handleSave}>Save</Button>
+              <Button size="sm" variant="ghost" onClick={handleCancel}>Cancel</Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16">
+              <AvatarImage
+                src={userProfile.avatar}
+                alt={userProfile.name}
+              />
+              <AvatarFallback className="text-lg">
+                {userProfile.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-semibold">{userProfile.name}</p>
+              <p className="text-sm text-muted-foreground">{userProfile.email}</p>
+              <Badge variant="secondary" className="mt-1">{userProfile.role}</Badge>
+            </div>
+          </div>
+        )}
       </Card>
 
       {/* Appearance */}

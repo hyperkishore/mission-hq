@@ -435,8 +435,13 @@ export const useGamificationStore = create<GamificationStore>()(
           profile: {
             ...current.profile,
             ...persistedProfile,
-            // Ensure arrays aren't lost
-            achievements: persistedProfile.achievements || current.profile.achievements,
+            // Merge achievements: keep persisted entries + add any new mock entries by ID
+            achievements: (() => {
+              const persisted = persistedProfile.achievements || []
+              const defaults = current.profile.achievements || []
+              const persistedIds = new Set(persisted.map((a: { id: string }) => a.id))
+              return [...persisted, ...defaults.filter((a: { id: string }) => !persistedIds.has(a.id))]
+            })(),
             unlockedThemes: persistedProfile.unlockedThemes || current.profile.unlockedThemes,
             personalGoals: { ...current.profile.personalGoals, ...(persistedProfile.personalGoals || {}) },
           },

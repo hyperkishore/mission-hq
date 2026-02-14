@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Flame, Target, CheckCircle, Zap, Shield } from "lucide-react"
 import { generateInsight } from "@/lib/insights"
+import { useUserStore } from "@/stores/user-store"
 
 function getGreeting(): string {
   const hour = new Date().getHours()
@@ -25,6 +26,7 @@ export function DailyCheckin() {
   const { profile, markCheckedIn, checkDailyReset, checkWeeklyReset, checkMonthlyReset } =
     useGamificationStore()
   const tasks = useTaskStore((s) => s.tasks)
+  const firstName = useUserStore((s) => s.firstName())
   const [open, setOpen] = useState(false)
 
   const today = new Date().toISOString().split("T")[0]
@@ -56,7 +58,7 @@ export function DailyCheckin() {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
-            {getGreeting()}, Alex!
+            {getGreeting()}, {firstName}!
           </DialogTitle>
         </DialogHeader>
 
