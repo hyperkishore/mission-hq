@@ -13,10 +13,10 @@ import { people, shoutouts, funFacts } from "@/data/mock-data"
 import { useFeedStore } from "@/stores/feed-store"
 
 const statusColors: Record<string, string> = {
-  active: "bg-green-500",
-  away: "bg-yellow-500",
-  busy: "bg-red-500",
-  offline: "bg-gray-400",
+  active: "bg-primary",
+  away: "bg-muted-foreground",
+  busy: "bg-destructive",
+  offline: "bg-border",
 }
 
 const statusLabels: Record<string, string> = {
@@ -148,7 +148,7 @@ export function PersonProfile({ id }: { id: string }) {
       {funFact && (
         <Card className="p-5 bg-muted/30">
           <div className="flex items-start gap-3">
-            <Lightbulb className="h-5 w-5 text-yellow-500 shrink-0 mt-0.5" />
+            <Lightbulb className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
             <div>
               <h4 className="text-xs font-semibold text-muted-foreground mb-1">
                 Fun Fact
@@ -164,7 +164,7 @@ export function PersonProfile({ id }: { id: string }) {
         personShoutoutsGiven.length > 0) && (
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Star className="h-4 w-4 text-yellow-500" />
+            <Star className="h-4 w-4 text-muted-foreground" />
             <h3 className="text-sm font-semibold">Shoutouts</h3>
           </div>
 

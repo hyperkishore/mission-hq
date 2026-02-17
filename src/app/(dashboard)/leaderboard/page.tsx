@@ -70,9 +70,9 @@ export default function LeaderboardPage() {
                   <div className="flex items-center gap-1">
                     <span className="text-sm font-semibold">{profile.weeklyXP} XP</span>
                     {xpTrend === "up" ? (
-                      <TrendingUp className="h-3.5 w-3.5 text-green-500" />
+                      <TrendingUp className="h-3.5 w-3.5 text-primary" />
                     ) : (
-                      <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+                      <TrendingDown className="h-3.5 w-3.5 text-destructive" />
                     )}
                   </div>
                 </div>

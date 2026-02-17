@@ -8,12 +8,12 @@ const GAP = 3
 const ROWS = 7 // days of week
 const DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""]
 
-function getColor(count: number, isDark: boolean): string {
-  if (count === 0) return isDark ? "rgb(30, 30, 30)" : "rgb(235, 235, 235)"
-  if (count === 1) return isDark ? "rgb(14, 68, 41)" : "rgb(155, 233, 168)"
-  if (count === 2) return isDark ? "rgb(0, 109, 50)" : "rgb(64, 196, 99)"
-  if (count === 3) return isDark ? "rgb(38, 166, 65)" : "rgb(48, 161, 78)"
-  return isDark ? "rgb(57, 211, 83)" : "rgb(33, 110, 57)"
+function getColor(count: number): string {
+  if (count === 0) return "hsl(var(--muted))"
+  if (count === 1) return "hsl(var(--primary) / 0.25)"
+  if (count === 2) return "hsl(var(--primary) / 0.5)"
+  if (count === 3) return "hsl(var(--primary) / 0.75)"
+  return "hsl(var(--primary))"
 }
 
 interface ContributionHeatmapProps {
@@ -23,11 +23,6 @@ interface ContributionHeatmapProps {
 
 export function ContributionHeatmap({ data, className }: ContributionHeatmapProps) {
   const [tooltip, setTooltip] = useState<{ text: string; x: number; y: number } | null>(null)
-
-  // Detect dark mode from document
-  const isDark = typeof document !== "undefined"
-    ? document.documentElement.classList.contains("dark")
-    : true
 
   // Organize into weeks (columns)
   const weeks: ContributionDay[][] = []
@@ -96,9 +91,9 @@ export function ContributionHeatmap({ data, className }: ContributionHeatmapProp
                   width={CELL_SIZE}
                   height={CELL_SIZE}
                   rx={2}
-                  fill={getColor(day.count, isDark)}
+                  fill={getColor(day.count)}
                   className="transition-opacity hover:opacity-80 cursor-default"
-                  onMouseEnter={(e) => {
+                  onMouseEnter={() => {
                     if (day.date) {
                       const d = new Date(day.date)
                       const label = d.toLocaleDateString("en-US", {
@@ -153,7 +148,7 @@ export function ContributionHeatmap({ data, className }: ContributionHeatmapProp
               style={{
                 width: 10,
                 height: 10,
-                backgroundColor: getColor(level, isDark),
+                backgroundColor: getColor(level),
               }}
             />
           ))}

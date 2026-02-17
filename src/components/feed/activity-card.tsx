@@ -28,8 +28,8 @@ export function ActivityCard({ item }: { item: ActivityFeedItem }) {
           <Badge variant="outline" className={cn("text-xs", config.color)}>
             {item.activityType === "needs-input" && (
               <span className="relative mr-1.5 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
             )}
             <Icon className="h-3 w-3 mr-1" />

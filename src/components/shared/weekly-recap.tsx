@@ -13,8 +13,8 @@ import { TrendingUp, TrendingDown, Minus } from "lucide-react"
 import { generateWeeklyNarrative } from "@/lib/insights"
 
 function TrendIcon({ value }: { value: number }) {
-  if (value > 0) return <TrendingUp className="h-3.5 w-3.5 text-green-500" />
-  if (value < 0) return <TrendingDown className="h-3.5 w-3.5 text-red-500" />
+  if (value > 0) return <TrendingUp className="h-3.5 w-3.5 text-primary" />
+  if (value < 0) return <TrendingDown className="h-3.5 w-3.5 text-destructive" />
   return <Minus className="h-3.5 w-3.5 text-muted-foreground" />
 }
 

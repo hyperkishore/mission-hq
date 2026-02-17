@@ -21,13 +21,6 @@ const typeIcons = {
   action: Zap,
 }
 
-const typeColors = {
-  info: "text-blue-500",
-  success: "text-green-500",
-  warning: "text-yellow-500",
-  action: "text-purple-500",
-}
-
 export function NotificationPanel() {
   const { notifications, isOpen, close, markRead, markAllRead, unreadCount } =
     useNotificationStore()
@@ -62,7 +55,7 @@ export function NotificationPanel() {
                     !notification.read && "bg-accent/20"
                   )}
                 >
-                  <div className={cn("mt-0.5 shrink-0", typeColors[notification.type])}>
+                  <div className={cn("mt-0.5 shrink-0 text-muted-foreground")}>
                     <Icon className="h-5 w-5" />
                   </div>
                   <div className="flex-1 min-w-0 space-y-1">
@@ -71,7 +64,7 @@ export function NotificationPanel() {
                         {notification.title}
                       </p>
                       {!notification.read && (
-                        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
+                        <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground line-clamp-2">

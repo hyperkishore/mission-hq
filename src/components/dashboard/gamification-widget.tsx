@@ -44,7 +44,7 @@ export function GamificationWidget() {
           <Progress value={xpPercentage} className="h-2" />
           {multiplier > 1.0 && (
             <div className="flex items-center gap-1 mt-1">
-              <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+              <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-accent text-accent-foreground">
                 <Zap className="h-2.5 w-2.5 mr-0.5" />
                 {multiplier.toFixed(1)}x XP
               </Badge>
@@ -69,7 +69,7 @@ export function GamificationWidget() {
             </div>
             <div className="text-xl font-bold">{profile.streak} days</div>
             {profile.streakFreezes > 0 && (
-              <div className="flex items-center gap-1 text-[10px] text-blue-500 mt-0.5">
+              <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
                 <Shield className="h-2.5 w-2.5" />
                 {profile.streakFreezes} freeze{profile.streakFreezes !== 1 ? "s" : ""}
               </div>

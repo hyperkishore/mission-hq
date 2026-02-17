@@ -18,14 +18,6 @@ const item = {
   show: { opacity: 1, y: 0 },
 }
 
-const themeColors: Record<string, string> = {
-  midnight: "from-indigo-900 to-slate-900",
-  forest: "from-green-800 to-emerald-900",
-  sunset: "from-orange-500 to-rose-600",
-  ocean: "from-cyan-500 to-blue-700",
-  aurora: "from-violet-500 to-teal-400",
-}
-
 export default function AchievementsPage() {
   const { profile } = useGamificationStore()
   const earned = profile.achievements.filter((a) => a.earned)
@@ -43,7 +35,7 @@ export default function AchievementsPage() {
       />
 
       {/* Summary Banner */}
-      <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5">
+      <Card className="p-6 bg-muted">
         <div className="flex items-center gap-6">
           <div className="h-16 w-16 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
             <span className="text-2xl font-bold text-primary">
@@ -77,7 +69,7 @@ export default function AchievementsPage() {
               <motion.div key={achievement.id} variants={item}>
                 <Card className="p-5 border-primary/30 bg-primary/5 relative overflow-hidden">
                   <div className="absolute top-3 right-3">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
+                    <CheckCircle className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex items-start gap-3">
                     <span className="text-3xl">{achievement.icon}</span>
@@ -170,18 +162,14 @@ export default function AchievementsPage() {
                   unlocked ? "border-primary/30" : "opacity-60"
                 }`}
               >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${
-                    themeColors[theme] || "from-gray-500 to-gray-700"
-                  } opacity-20`}
-                />
+                <div className="absolute inset-0 bg-muted opacity-20" />
                 <div className="relative">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-semibold capitalize">
                       {theme}
                     </span>
                     {unlocked ? (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-primary" />
                     ) : (
                       <Lock className="h-4 w-4 text-muted-foreground" />
                     )}

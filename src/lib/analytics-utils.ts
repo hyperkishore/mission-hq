@@ -120,7 +120,15 @@ export function computeFocusDistribution(data: AnalyticsDataPoint[]) {
     buckets[dayNames[dayOfWeek]] += point.focusMinutes
   })
 
-  const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899']
+  const colors = [
+    'var(--chart-1)',
+    'var(--chart-2)',
+    'var(--chart-3)',
+    'var(--chart-4)',
+    'var(--chart-5)',
+    'var(--chart-1)',
+    'var(--chart-2)',
+  ]
 
   return dayNames.map((name, i) => ({
     name,

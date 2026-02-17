@@ -66,11 +66,11 @@ export function DailyCheckin() {
           {/* Streak — subtle display */}
           {profile.streak > 0 && (
             <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Flame className="h-4 w-4 text-orange-400" />
+              <Flame className="h-4 w-4 text-muted-foreground" />
               <span>{profile.streak}-day streak</span>
               {profile.streakFreezes > 0 && (
                 <span className="inline-flex items-center gap-1">
-                  <Shield className="h-3 w-3 text-blue-400" />
+                  <Shield className="h-3 w-3 text-muted-foreground" />
                   {profile.streakFreezes}
                 </span>
               )}
@@ -80,14 +80,14 @@ export function DailyCheckin() {
           {/* Today's overview */}
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2.5 p-3 rounded-lg bg-muted/50">
-              <Target className="h-5 w-5 text-blue-500 shrink-0" />
+              <Target className="h-5 w-5 text-muted-foreground shrink-0" />
               <div>
                 <div className="text-lg font-bold">{pendingTasks.length}</div>
                 <div className="text-xs text-muted-foreground">Tasks today</div>
               </div>
             </div>
             <div className="flex items-center gap-2.5 p-3 rounded-lg bg-muted/50">
-              <CheckCircle className="h-5 w-5 text-red-500 shrink-0" />
+              <CheckCircle className="h-5 w-5 text-destructive shrink-0" />
               <div>
                 <div className="text-lg font-bold">{highPriorityCount}</div>
                 <div className="text-xs text-muted-foreground">High priority</div>
@@ -97,8 +97,8 @@ export function DailyCheckin() {
 
           {/* XP multiplier hint */}
           {new Date().getHours() < 9 && (
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-              <Zap className="h-4 w-4 text-yellow-500 shrink-0" />
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-accent border border-border">
+              <Zap className="h-4 w-4 text-primary shrink-0" />
               <span className="text-sm font-medium">
                 Early Bird bonus active! 1.5x XP until 9 AM
               </span>
@@ -107,8 +107,8 @@ export function DailyCheckin() {
 
           {/* Multiplier info */}
           {profile.streak >= 7 && (
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-purple-500/10 border border-purple-500/20">
-              <Flame className="h-4 w-4 text-purple-500 shrink-0" />
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-accent border border-border">
+              <Flame className="h-4 w-4 text-primary shrink-0" />
               <span className="text-sm font-medium">
                 {profile.streak >= 30
                   ? "2x"

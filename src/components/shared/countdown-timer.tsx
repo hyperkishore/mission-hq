@@ -34,7 +34,7 @@ export function CountdownTimer({ deadline }: { deadline: string }) {
   }
 
   return (
-    <span className="text-xs font-medium text-orange-500">
+    <span className="text-xs font-medium text-primary">
       {time.hours}h {time.minutes}m left
     </span>
   )

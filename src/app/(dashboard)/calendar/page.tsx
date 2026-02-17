@@ -15,7 +15,6 @@ import {
   isToday,
   addMonths,
   subMonths,
-  parseISO,
 } from "date-fns"
 
 import { PageHeader } from "@/components/shared/page-header"
@@ -30,11 +29,11 @@ import { toast } from "sonner"
 import type { CalendarEvent } from "@/types"
 
 const EVENT_COLORS: Record<string, string> = {
-  meeting: "#3b82f6",
-  deadline: "#ef4444",
-  "focus-block": "#8b5cf6",
-  social: "#10b981",
-  review: "#f59e0b",
+  meeting: "var(--chart-1)",
+  deadline: "var(--chart-3)",
+  "focus-block": "var(--chart-2)",
+  social: "var(--chart-5)",
+  review: "var(--chart-4)",
 }
 
 export default function CalendarPage() {
@@ -90,7 +89,7 @@ export default function CalendarPage() {
       startTime: newStartTime,
       endTime: newEndTime,
       type: newType,
-      color: EVENT_COLORS[newType] || "#8b5cf6",
+      color: EVENT_COLORS[newType] || "var(--chart-2)",
     }
     setLocalEvents((prev) => [...prev, event])
     setNewTitle("")
@@ -279,15 +278,7 @@ export default function CalendarPage() {
                   >
                     <div className="flex items-start justify-between mb-1">
                       <h4 className="font-semibold text-sm">{event.title}</h4>
-                      <Badge
-                        variant="secondary"
-                        className="text-xs"
-                        style={{
-                          backgroundColor: EVENT_COLORS[event.type] + "20",
-                          color: EVENT_COLORS[event.type],
-                          borderColor: EVENT_COLORS[event.type],
-                        }}
-                      >
+                      <Badge variant="secondary" className="text-xs">
                         {event.type}
                       </Badge>
                     </div>

@@ -9,7 +9,7 @@ import { TrendingUp, TrendingDown, ChevronRight } from "lucide-react"
 function TrendBadge({ value, suffix = "%" }: { value: number; suffix?: string }) {
   if (value > 0) {
     return (
-      <span className="inline-flex items-center gap-0.5 text-green-400 text-sm font-medium">
+      <span className="inline-flex items-center gap-0.5 text-primary text-sm font-medium">
         <TrendingUp className="h-3.5 w-3.5" />
         +{value}{suffix}
       </span>
@@ -17,7 +17,7 @@ function TrendBadge({ value, suffix = "%" }: { value: number; suffix?: string })
   }
   if (value < 0) {
     return (
-      <span className="inline-flex items-center gap-0.5 text-red-400 text-sm font-medium">
+      <span className="inline-flex items-center gap-0.5 text-destructive text-sm font-medium">
         <TrendingDown className="h-3.5 w-3.5" />
         {value}{suffix}
       </span>

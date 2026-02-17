@@ -52,9 +52,9 @@ function Ring({ progress, color, size, strokeWidth }: RingProps) {
 }
 
 const COLORS = {
-  tasks: "#10b981",
-  focus: "#3b82f6",
-  social: "#f59e0b",
+  tasks: "var(--chart-1)",
+  focus: "var(--chart-2)",
+  social: "var(--chart-3)",
 } as const
 
 function GoalStepper({ label, value, onChange, min = 1, max = 20 }: {

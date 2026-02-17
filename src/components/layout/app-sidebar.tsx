@@ -117,7 +117,7 @@ export function AppSidebar() {
                       </Link>
                     </SidebarMenuButton>
                     {item.title === "Home" && highPriorityCount > 0 && (
-                      <SidebarMenuBadge className="bg-red-500 text-white text-[10px]">
+                      <SidebarMenuBadge className="bg-destructive text-destructive-foreground text-[10px]">
                         {highPriorityCount}
                       </SidebarMenuBadge>
                     )}

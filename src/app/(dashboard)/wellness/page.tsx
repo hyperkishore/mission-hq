@@ -114,7 +114,7 @@ export default function WellnessPage() {
                   duration: breathingPhase === "in" ? 4 : breathingPhase === "out" ? 4 : 2,
                   ease: "easeInOut",
                 }}
-                className="h-28 w-28 rounded-full bg-gradient-to-br from-blue-400 to-purple-500"
+                className="h-28 w-28 rounded-full bg-muted"
               />
               <p className="text-base font-medium h-7">
                 {breathingActive ? breathingPhaseText[breathingPhase] : "Click Start to begin"}

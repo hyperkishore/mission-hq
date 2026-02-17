@@ -1,31 +1,31 @@
 export const categoryColors: Record<string, string> = {
-  product: "bg-blue-500/15 text-blue-500 border-blue-500/20",
-  company: "bg-purple-500/15 text-purple-500 border-purple-500/20",
-  engineering: "bg-green-500/15 text-green-500 border-green-500/20",
-  design: "bg-pink-500/15 text-pink-500 border-pink-500/20",
-  hr: "bg-orange-500/15 text-orange-500 border-orange-500/20",
+  product: "bg-secondary text-secondary-foreground border-border",
+  company: "bg-secondary text-secondary-foreground border-border",
+  engineering: "bg-secondary text-secondary-foreground border-border",
+  design: "bg-secondary text-secondary-foreground border-border",
+  hr: "bg-secondary text-secondary-foreground border-border",
 }
 
 export const priorityColors: Record<string, string> = {
-  critical: "bg-red-500/15 text-red-500 border-red-500/20",
-  high: "bg-orange-500/15 text-orange-500 border-orange-500/20",
-  medium: "bg-yellow-500/15 text-yellow-500 border-yellow-500/20",
-  low: "bg-green-500/15 text-green-500 border-green-500/20",
+  critical: "bg-destructive/15 text-destructive border-destructive/20",
+  high: "bg-destructive/10 text-destructive border-destructive/20",
+  medium: "bg-secondary text-secondary-foreground border-border",
+  low: "bg-muted text-muted-foreground border-border",
 }
 
 export const priorityBorderColors: Record<string, string> = {
-  critical: "border-l-red-500",
-  high: "border-l-orange-500",
-  medium: "border-l-yellow-500",
-  low: "border-l-green-500",
+  critical: "border-l-destructive",
+  high: "border-l-destructive",
+  medium: "border-l-primary",
+  low: "border-l-border",
 }
 
 export const eventTypeColors: Record<string, string> = {
-  "all-hands": "bg-purple-500/10 text-purple-700 dark:text-purple-400",
-  social: "bg-green-500/10 text-green-700 dark:text-green-400",
-  workshop: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
-  deadline: "bg-red-500/10 text-red-700 dark:text-red-400",
-  launch: "bg-orange-500/10 text-orange-700 dark:text-orange-400",
+  "all-hands": "bg-secondary text-secondary-foreground",
+  social: "bg-secondary text-secondary-foreground",
+  workshop: "bg-secondary text-secondary-foreground",
+  deadline: "bg-secondary text-secondary-foreground",
+  launch: "bg-secondary text-secondary-foreground",
 }
 
 export const updateTypeConfig: Record<
@@ -33,24 +33,24 @@ export const updateTypeConfig: Record<
   { color: string; label: string; borderColor: string }
 > = {
   shipped: {
-    color: "bg-green-500/15 text-green-500 border-green-500/20",
+    color: "bg-secondary text-secondary-foreground border-border",
     label: "Shipped",
-    borderColor: "border-l-green-500",
+    borderColor: "border-l-primary",
   },
   decided: {
-    color: "bg-blue-500/15 text-blue-500 border-blue-500/20",
+    color: "bg-secondary text-secondary-foreground border-border",
     label: "Decided",
-    borderColor: "border-l-blue-500",
+    borderColor: "border-l-primary",
   },
   "needs-input": {
-    color: "bg-amber-500/15 text-amber-500 border-amber-500/20",
+    color: "bg-secondary text-secondary-foreground border-border",
     label: "Needs Input",
-    borderColor: "border-l-amber-500",
+    borderColor: "border-l-primary",
   },
 }
 
 export const feedTypeBorderColors: Record<string, string> = {
-  social: "border-l-blue-500",
-  shoutout: "border-l-amber-400",
-  announcement: "border-l-purple-500",
+  social: "border-l-primary",
+  shoutout: "border-l-primary",
+  announcement: "border-l-primary",
 }

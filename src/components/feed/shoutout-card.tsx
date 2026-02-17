@@ -8,7 +8,7 @@ import type { ShoutoutFeedItem } from "@/types"
 
 export function ShoutoutCard({ item }: { item: ShoutoutFeedItem }) {
   return (
-    <Card className="p-5 hover:bg-accent/30 transition-colors border-l-3 border-l-amber-400 bg-gradient-to-r from-amber-500/5 to-transparent">
+    <Card className="p-5 hover:bg-accent/30 transition-colors border-l-3 border-l-primary bg-muted/50">
       <div className="flex items-start gap-4">
         <motion.div
           className="text-4xl shrink-0"

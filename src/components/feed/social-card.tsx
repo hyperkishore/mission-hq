@@ -18,7 +18,7 @@ export function SocialCard({ item }: { item: SocialFeedItem }) {
   const [animateLike, setAnimateLike] = useState(false)
 
   return (
-    <Card className="p-5 hover:bg-accent/30 transition-colors border-l-3 border-l-blue-500">
+    <Card className="p-5 hover:bg-accent/30 transition-colors border-l-3 border-l-primary">
       <div className="space-y-3">
         <div className="flex items-start gap-3">
           <Avatar className="h-9 w-9">
@@ -86,7 +86,7 @@ export function SocialCard({ item }: { item: SocialFeedItem }) {
             >
               <Heart
                 className={`h-4 w-4 ${
-                  item.liked ? "fill-red-500 text-red-500" : ""
+                  item.liked ? "fill-destructive text-destructive" : ""
                 }`}
               />
             </motion.div>

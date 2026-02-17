@@ -64,9 +64,9 @@ export function FocusTimerWidget() {
 
   const statusColor =
     status === "break"
-      ? "text-green-500"
+      ? "text-primary"
       : status === "running"
-      ? "text-blue-500"
+      ? "text-primary"
       : "text-muted-foreground"
 
   return (
@@ -95,9 +95,9 @@ export function FocusTimerWidget() {
               strokeLinecap="round"
               className={
                 status === "break"
-                  ? "text-green-500"
+                  ? "text-primary"
                   : status === "running"
-                  ? "text-blue-500"
+                  ? "text-primary"
                   : "text-primary"
               }
               style={{ transition: "stroke-dashoffset 0.5s ease" }}

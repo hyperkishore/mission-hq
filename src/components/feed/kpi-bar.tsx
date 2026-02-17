@@ -26,7 +26,6 @@ export function KpiBar() {
       suffix: "",
       icon: CheckCircle,
       href: "/dashboard",
-      color: "text-green-500",
     },
     {
       label: "Focus time",
@@ -34,7 +33,6 @@ export function KpiBar() {
       suffix: "m",
       icon: Timer,
       href: "/analytics",
-      color: "text-blue-500",
     },
     {
       label: "Streak",
@@ -42,7 +40,6 @@ export function KpiBar() {
       suffix: "d",
       icon: Flame,
       href: "/dashboard",
-      color: "text-orange-500",
     },
     {
       label: `Lv ${profile.level}`,
@@ -50,7 +47,6 @@ export function KpiBar() {
       suffix: "%",
       icon: Zap,
       href: "/leaderboard",
-      color: "text-yellow-500",
     },
     {
       label: "Unread",
@@ -58,7 +54,6 @@ export function KpiBar() {
       suffix: "",
       icon: Bell,
       href: "/dashboard",
-      color: "text-red-500",
     },
   ]
 
@@ -71,7 +66,7 @@ export function KpiBar() {
             href={stat.href}
             className="flex items-center gap-2.5 rounded-lg border bg-card px-2.5 py-2 md:px-3.5 md:py-2.5 hover:bg-accent/50 transition-colors shrink-0"
           >
-            <stat.icon className={`h-4 w-4 ${stat.color}`} />
+            <stat.icon className="h-4 w-4 text-muted-foreground" />
             <div className="flex items-baseline gap-1.5">
               <span className="text-lg font-bold leading-none">
                 <AnimatedCounter value={stat.numericValue} suffix={stat.suffix} duration={800} />

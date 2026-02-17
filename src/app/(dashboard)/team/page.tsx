@@ -13,10 +13,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { people } from "@/data/mock-data"
 
 const statusColors = {
-  active: "bg-green-500",
-  away: "bg-yellow-500",
-  busy: "bg-red-500",
-  offline: "bg-gray-400",
+  active: "bg-primary",
+  away: "bg-muted-foreground",
+  busy: "bg-destructive",
+  offline: "bg-border",
 }
 
 const departments = ["All", ...Array.from(new Set(people.map((p) => p.department)))]

@@ -127,24 +127,24 @@ export default function AnalyticsPage() {
   const comparisonText = comparisonLabels[range]
 
   const focusChartConfig = {
-    focusMinutes: { label: "Focus Time (min)", color: "#3b82f6" },
+    focusMinutes: { label: "Focus Time (min)", color: "var(--chart-1)" },
   }
 
   const tasksChartConfig = {
-    tasksCompleted: { label: "Tasks", color: "#10b981" },
-    meetings: { label: "Meetings", color: "#3b82f6" },
+    tasksCompleted: { label: "Tasks", color: "var(--chart-2)" },
+    meetings: { label: "Meetings", color: "var(--chart-1)" },
   }
 
   const productivityChartConfig = {
-    productivity: { label: "Productivity", color: "#8b5cf6" },
+    productivity: { label: "Productivity", color: "var(--chart-3)" },
   }
 
   const xpChartConfig = {
-    xp: { label: "XP Earned", color: "#f59e0b" },
+    xp: { label: "XP Earned", color: "var(--chart-4)" },
   }
 
   const radarChartConfig = {
-    value: { label: "Completion %", color: "#8b5cf6" },
+    value: { label: "Completion %", color: "var(--chart-3)" },
   }
 
   const donutChartConfig = Object.fromEntries(
@@ -157,7 +157,6 @@ export default function AnalyticsPage() {
       value: avgFocus,
       suffix: "h",
       icon: Brain,
-      color: "text-blue-500",
       delta: deltas.focus,
     },
     {
@@ -165,7 +164,6 @@ export default function AnalyticsPage() {
       value: totalTasks,
       suffix: "",
       icon: CheckCircle,
-      color: "text-green-500",
       delta: deltas.tasks,
     },
     {
@@ -173,7 +171,6 @@ export default function AnalyticsPage() {
       value: totalMeetings,
       suffix: "",
       icon: Video,
-      color: "text-blue-500",
       delta: deltas.meetings,
     },
     {
@@ -181,7 +178,6 @@ export default function AnalyticsPage() {
       value: avgProductivity,
       suffix: "%",
       icon: TrendingUp,
-      color: "text-purple-500",
       delta: deltas.productivity,
     },
   ]
@@ -231,7 +227,7 @@ export default function AnalyticsPage() {
                     </p>
                     <div
                       className={`flex items-center gap-1 text-xs ${
-                        stat.delta >= 0 ? "text-green-500" : "text-red-500"
+                        stat.delta >= 0 ? "text-primary" : "text-destructive"
                       }`}
                     >
                       {stat.delta >= 0 ? (
@@ -244,7 +240,7 @@ export default function AnalyticsPage() {
                       </span>
                     </div>
                   </div>
-                  <stat.icon className={`h-8 w-8 ${stat.color}`} />
+                  <stat.icon className="h-8 w-8 text-muted-foreground" />
                 </div>
               </CardContent>
             </Card>
@@ -269,8 +265,8 @@ export default function AnalyticsPage() {
                 <Area
                   type="monotone"
                   dataKey="focusMinutes"
-                  stroke="#3b82f6"
-                  fill="#3b82f6"
+                  stroke="var(--chart-1)"
+                  fill="var(--chart-1)"
                   fillOpacity={0.6}
                 />
               </AreaChart>
@@ -290,8 +286,8 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="dateFormatted" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="tasksCompleted" fill="#10b981" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="meetings" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="tasksCompleted" fill="var(--chart-2)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="meetings" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -312,7 +308,7 @@ export default function AnalyticsPage() {
                 <XAxis dataKey="dateFormatted" />
                 <YAxis />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="xp" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="xp" fill="var(--chart-4)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartContainer>
           </CardContent>
@@ -332,8 +328,8 @@ export default function AnalyticsPage() {
                 <Radar
                   name="Completion"
                   dataKey="value"
-                  stroke="#8b5cf6"
-                  fill="#8b5cf6"
+                  stroke="var(--chart-3)"
+                  fill="var(--chart-3)"
                   fillOpacity={0.4}
                 />
               </RadarChart>
@@ -386,9 +382,9 @@ export default function AnalyticsPage() {
                 <Line
                   type="monotone"
                   dataKey="productivity"
-                  stroke="#8b5cf6"
+                  stroke="var(--chart-3)"
                   strokeWidth={2}
-                  dot={{ fill: "#8b5cf6", r: 4 }}
+                  dot={{ fill: "var(--chart-3)", r: 4 }}
                 />
               </LineChart>
             </ChartContainer>
